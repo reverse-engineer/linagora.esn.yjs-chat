@@ -1,0 +1,27 @@
+{
+  "name": "awesome-chat",
+  "main": "index.js",
+  "version": "0.1.0",
+  "authors": [
+    "Linagora Folks"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "AGPL-3.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "chai": "~3.0.0",
+    "angular": "~1.4.1",
+    "angular-mocks": "~1.4.1"
+  }
+}
