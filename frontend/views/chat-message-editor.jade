@@ -1,0 +1,5 @@
+form.conference-form
+  .conference-field-group.input-group
+    input.form-control(type='text', ng-model='messageContent')
+    .input-group-btn
+      button.btn.btn-md.btn-primary(ng-click='createMessage()', type='submit') #{__('Send')}
