@@ -1,5 +1,6 @@
-form.conference-form
-  .conference-field-group.input-group
-    input.form-control(type='text', ng-model='messageContent')
-    .input-group-btn
-      button.btn.btn-md.btn-primary(ng-click='createMessage()', type='submit') #{__('Send')}
+form
+  .input-group
+    input.form-control.input-sm.chat_input(id="btn-input" type="text" placeholder="Write your message here..." ng-model='messageContent')
+    span.input-group-btn
+      button.btn.btn-primary.btn-sm(id="btn-chat" ng-click='createMessage()', type='submit') #{__('Send')}
+
