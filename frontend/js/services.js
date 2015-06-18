@@ -56,13 +56,13 @@ angular.module('esn.chat')
           throw new Error('No message provided');
         }
         ret.yMessages.push(chatMessage);
-        $rootScope.$emit('chat:message:sent', chatMessage);
+        $rootScope.$broadcast('chat:message:sent', chatMessage);
       }
 
       function toggleWindow() {
         ret.opened = !ret.opened;
         ret.unread = ret.opened ? 0 : ret.unread;
-        $rootScope.$emit('chat:window:visibility', {visible: ret.opened});
+        $rootScope.$broadcast('chat:window:visibility', {visible: ret.opened});
       }
 
       var ret = {
@@ -80,7 +80,7 @@ angular.module('esn.chat')
         ret.yMessages.observe(function(events) {
           events.forEach(function(event) {
             if (event.type === 'insert') {
-              $rootScope.$emit('chat:message:received', event.value);
+              $rootScope.$broadcast('chat:message:received', event.value);
               ret.unread = ret.opened ? 0 : ret.unread + 1;
             } else if (event.type === 'update') {
               // Don't do anything for now!

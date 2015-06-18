@@ -2,7 +2,7 @@
 
 var expect = chai.expect;
 
-describe('The Directives', function() {
+describe('The Services', function() {
 
   describe('The messageAvatarService service', function() {
 
@@ -258,7 +258,8 @@ describe('The Directives', function() {
       });
 
       it('should broadcast a chat:message:sent', function(done) {
-        $rootScope.$on('chat:message:sent', function() {
+        var scope = $rootScope.$new();
+        scope.$on('chat:message:sent', function() {
           done();
         });
         chatFactory.sendMessage(message);
@@ -290,16 +291,18 @@ describe('The Directives', function() {
         });
       });
 
-      it('should emit chat:window:visibility event on window opening', function(done) {
-        $rootScope.$on('chat:window:visibility', function(evt, data) {
+      it('should broadcast chat:window:visibility event on window opening', function(done) {
+        var scope = $rootScope.$new();
+        scope.$on('chat:window:visibility', function(evt, data) {
           expect(data).to.deep.equal({visible: true});
           done();
         });
         chatFactory.toggleWindow();
       });
-      it('should emit chat:window:visibility event on window closing', function(done) {
+      it('should broadcast chat:window:visibility event on window closing', function(done) {
+        var scope = $rootScope.$new();
         chatFactory.toggleWindow();
-        $rootScope.$on('chat:window:visibility', function(evt, data) {
+        scope.$on('chat:window:visibility', function(evt, data) {
           expect(data).to.deep.equal({visible: false});
           done();
         });
