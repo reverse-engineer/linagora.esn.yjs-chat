@@ -6,7 +6,10 @@ var expect = chai.expect;
 
 describe('Directives', function() {
 
-  beforeEach(module('esn.chat'));
+  beforeEach(function() {
+    module('esn.chat');
+    module('jadeTemplates');
+  });
 
   describe('The chatMessageBubble directive', function() {
     var $rootScope, $compile, $popover, ChatMessage, called, config, easyrtcService;
@@ -65,6 +68,57 @@ describe('Directives', function() {
       expect(called).to.be.false;
     });
 
+  });
+
+  describe('the chatMessageEditor directive', function() {
+
+    var chatMock = {};
+    var easyrtcid = 'easyrtcid';
+    var avatar = {
+      src: 'avatarSrc'
+    };
+
+    beforeEach(function() {
+      var easyRTCService = {
+        myEasyrtcid: function() {
+          return easyrtcid;
+        }
+      };
+
+      var localCameraScreenshotMock = {
+        shoot: function() {
+          return avatar;
+        }
+      };
+
+      angular.mock.module(function($provide) {
+        $provide.value('easyRTCService', easyRTCService);
+        $provide.value('chat', chatMock);
+        $provide.value('localCameraScreenshot', localCameraScreenshotMock);
+      });
+    });
+
+    beforeEach(inject(function($rootScope, $compile) {
+      this.scope = $rootScope.$new();
+      $compile('<chat-message-editor></chat-message-editor>')(this.scope);
+      $rootScope.$digest();
+    }));
+
+    describe('the createMessage function', function() {
+      it('should create and send a message from ', function() {
+        var msgContent = 'content';
+        this.scope.messageContent = msgContent;
+
+        chatMock.sendMessage = function(msg) {
+          expect(msg.author).to.equal(easyrtcid);
+          expect(msg.authorAvatar).to.deep.equal(avatar.src);
+          expect(msg.message).to.equal(msgContent);
+        };
+
+        this.scope.createMessage();
+        expect(this.scope.messageContent).to.equal('');
+      });
+    });
   });
 
 });

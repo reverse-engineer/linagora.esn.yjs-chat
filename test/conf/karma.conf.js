@@ -31,7 +31,7 @@ module.exports = function(config) {
     },
     ngJade2ModulePreprocessor: {
       stripPrefix: 'frontend/',
-      prependPrefix: 'chat/',
+      prependPrefix: '/chat/',
       jadeRenderConfig: {
         __: function(str) { return str; }
       },
