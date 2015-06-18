@@ -78,38 +78,38 @@ describe('Directives', function() {
       src: 'avatarSrc'
     };
 
-    beforeEach(function() {
+    beforeEach(function () {
       var easyRTCService = {
-        myEasyrtcid: function() {
+        myEasyrtcid: function () {
           return easyrtcid;
         }
       };
 
       var localCameraScreenshotMock = {
-        shoot: function() {
+        shoot: function () {
           return avatar;
         }
       };
 
-      angular.mock.module(function($provide) {
+      angular.mock.module(function ($provide) {
         $provide.value('easyRTCService', easyRTCService);
         $provide.value('chat', chatMock);
         $provide.value('localCameraScreenshot', localCameraScreenshotMock);
       });
     });
 
-    beforeEach(inject(function($rootScope, $compile) {
+    beforeEach(inject(function ($rootScope, $compile) {
       this.scope = $rootScope.$new();
       $compile('<chat-message-editor></chat-message-editor>')(this.scope);
       $rootScope.$digest();
     }));
 
-    describe('the createMessage function', function() {
-      it('should create and send a message from ', function() {
+    describe('the createMessage function', function () {
+      it('should create and send a message from ', function () {
         var msgContent = 'content';
         this.scope.messageContent = msgContent;
 
-        chatMock.sendMessage = function(msg) {
+        chatMock.sendMessage = function (msg) {
           expect(msg.author).to.equal(easyrtcid);
           expect(msg.authorAvatar).to.deep.equal(avatar.src);
           expect(msg.message).to.equal(msgContent);
@@ -222,3 +222,61 @@ describe('Directives', function() {
 
 
 });
+
+  describe('chatIcon', function() {
+    var chat;
+    var scope;
+    var element;
+    var rootScope;
+    beforeEach(function() {
+      module('esn.chat');
+      module('jadeTemplates');
+    });
+    beforeEach(module(function($provide) {
+      chat = {
+        toggleWindow: function() {
+
+        },
+        unread: 0,
+        opened: false
+      };
+      $provide.value('chat', chat);
+    }));
+
+    beforeEach(inject(function($compile, $rootScope) {
+      rootScope = $rootScope;
+      scope = $rootScope.$new();
+      element = $compile('<chat-icon />')(scope);
+      rootScope.$digest();
+    }));
+
+    it('Should call toggleWindow on click', function(done) {
+      chat.toggleWindow = function() {
+        done();
+      };
+      element.find('a').click();
+      rootScope.$digest();
+    });
+
+    it('Should display number of messages unread when there are some', function(){
+      chat.unread=5;
+      chat.opened=false;
+      rootScope.$digest();
+      expect(element.find('.badge').hasClass('ng-hide')).to.be.false;
+    });
+
+    it('Should not display number of messages unread when there are none', function(){
+      chat.unread=0;
+      chat.opened=false;
+      rootScope.$digest();
+      expect(element.find('.badge').hasClass('ng-hide')).to.be.true;
+    });
+
+    it('Should not display number of messages unread when the panel is opened', function(){
+      chat.unread=56;
+      chat.opened=true;
+      rootScope.$digest();
+      expect(element.find('.badge').hasClass('ng-hide')).to.be.true;
+    });
+
+  });
