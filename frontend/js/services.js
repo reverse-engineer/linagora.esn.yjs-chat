@@ -21,7 +21,7 @@ angular.module('chat')
     function ChatMessage(object) {
       this.author = object.author;
       this.authorAvatar = object.authorAvatar;
-      this.published = object.authorAvatar;
+      this.published = object.published;
       this.message = object.message;
     }
 
