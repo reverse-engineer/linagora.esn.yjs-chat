@@ -94,4 +94,36 @@ angular.module('esn.chat')
       yArraySynchronizer('chat:messages', ret.messages, callback);
 
       return ret;
+    }])
+
+    .factory('newCanvas', function() {
+      return document.createElement('canvas');
+    })
+
+    .factory('messageAvatarService', ['$window', 'newCanvas', 'currentConferenceState', 'attendeeColorsService', 'drawHelper', 'CHAT_AVATAR_SIZE', 'DEFAULT_AVATAR', function($window, newCanvas, currentConferenceState, attendeeColorsService, drawHelper, CHAT_AVATAR_SIZE, DEFAULT_AVATAR) {
+
+      function generate(author, callback) {
+
+        var attendee = currentConferenceState.getAttendeeByEasyrtcid(author);
+        if (!attendee || !attendee.avatar) {
+          return callback(null, DEFAULT_AVATAR);
+        }
+
+        currentConferenceState.getAvatarImageByIndex(attendee.index, function(err, image) {
+          if (err) {
+            return callback(null, DEFAULT_AVATAR);
+          }
+
+          var canvas = newCanvas();
+          var context = canvas.getContext('2d');
+          context.fillStyle = attendeeColorsService.getColorForAttendeeAtIndex(attendee.index);
+          drawHelper.drawImage(context, image, 0, 0, CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
+          return callback(null, canvas.toDataURL());
+        });
+      }
+
+      return {
+        generate: generate
+      };
+
     }]);

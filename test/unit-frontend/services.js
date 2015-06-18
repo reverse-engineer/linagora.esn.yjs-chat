@@ -2,319 +2,410 @@
 
 var expect = chai.expect;
 
-describe('the yArraySynchronizer factory', function() {
+describe('The Directives', function() {
 
-  var ylist;
+  describe('The messageAvatarService service', function() {
 
-  beforeEach(function() {
-    module('esn.chat');
-  });
+    beforeEach(function() {
 
-  beforeEach(function() {
-    var self = this;
-    this.yServiceData = {
-      connector: {
-        whenSynced: function(callback) {
-          callback();
+      this.newCanvas = {
+        getContext: function() {
+          return {
+            drawImage: function() {
+            }
+          }
+        },
+        toBlob: function() {
         }
-      }
-    };
-    var yService = function() {
-      return self.yServiceData;
-    };
-    this.$window = {
-      Y: {
-        List: function() {}
-      }
-    };
+      };
 
-    module(function($provide) {
-      $provide.value('yjsService', yService);
-      $provide.value('$window', self.$window);
+      this.currentConferenceState = {};
+      this.attendeeColorsService = {};
+      this.drawHelper = {};
+      var self = this;
+
+      angular.mock.module('esn.chat');
+      angular.mock.module(function($provide) {
+        $provide.value('newCanvas', function() {
+          return self.newCanvas;
+        });
+        $provide.value('currentConferenceState', self.currentConferenceState);
+        $provide.value('attendeeColorsService', self.attendeeColorsService);
+        $provide.value('drawHelper', self.drawHelper);
+      });
     });
-    inject(function(yArraySynchronizer) {
-      self.yArraySynchronizer = yArraySynchronizer;
-    });
 
-    ylist = {
-      observe: function() {}
-    };
+    beforeEach(inject(['$compile', '$rootScope', 'messageAvatarService', 'DEFAULT_AVATAR', function($c, $r, messageAvatarService, DEFAULT_AVATAR) {
+      this.$compile = $c;
+      this.$rootScope = $r;
+      this.$scope = this.$rootScope.$new();
+      this.messageAvatarService = messageAvatarService;
+      this.DEFAULT_AVATAR = DEFAULT_AVATAR;
+    }]));
 
-  });
+    describe('The generate function', function() {
 
-  it('should call the callback when yjs isSynced is called', function() {
-    this.yServiceData.y = {
-      val: function() {
-        return ylist;
-      }
-    };
+      it('should send back DEFAULT_AVATAR when attendee not found', function(done) {
+        var self = this;
+        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+          return;
+        };
 
-    var spy = chai.spy();
-    this.yArraySynchronizer('test', [], spy);
-    expect(spy).to.been.called.with(ylist);
-  });
+        this.messageAvatarService.generate({}, function(err, result) {
+          expect(result).to.equal(self.DEFAULT_AVATAR);
+          done();
+        });
+      });
 
-  it('should create a new YList when the val does not exist', function(done) {
-    var myTab = [];
+      it('should send back DEFAULT_AVATAR when attendee does not have avatar', function(done) {
+        var self = this;
+        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+          return {};
+        };
 
-    this.yServiceData.y = {
-      val: function() {
-        return undefined;
-      }
-    };
+        this.messageAvatarService.generate({}, function(err, result) {
+          expect(result).to.equal(self.DEFAULT_AVATAR);
+          done();
+        });
 
-    this.$window.Y.List = function(t) {
-      expect(t).to.equal(myTab);
-      done();
-      return ylist;
-    };
+      });
 
-    this.yArraySynchronizer('test', myTab);
-  });
-
-  it('should not create a new YList when the val exists', function(done) {
-    var myTab = [];
-
-    this.yServiceData.y = {
-      val: function() {
-        return ylist;
-      }
-    };
-
-    this.$window.Y.List = function(t) {
-      expect(t).to.equal(myTab);
-      done(new Error('new ylist creation'));
-      return ylist;
-    };
-
-    this.yArraySynchronizer('test', myTab, function() {
-      done();
+      it('should generate the image from canvas', function(done) {
+        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+          return {avatar: 1};
+        };
+        this.currentConferenceState.getAvatarImageByIndex = function(index, callback) {
+          return callback(null, 'image');
+        };
+        this.attendeeColorsService.getColorForAttendeeAtIndex = function() {
+        };
+        this.drawHelper.drawImage = function() {
+          done();
+        };
+        this.messageAvatarService.generate({});
+      });
     });
   });
 
-});
 
-describe('the chat factory', function() {
-  var chatFactory, yList, $rootScope, message;
+  describe('the yArraySynchronizer factory', function() {
 
-  beforeEach(module('esn.chat'));
-  beforeEach(function() {
-    var self = this;
-    var yService = function() {
-      return {
+    var ylist;
+
+    beforeEach(function() {
+      module('esn.chat');
+    });
+
+    beforeEach(function() {
+      var self = this;
+      this.yServiceData = {
         connector: {
           whenSynced: function(callback) {
             callback();
           }
         }
       };
-    };
-
-    yList = {
-      val: chai.spy(),
-      observe: chai.spy(),
-      push: chai.spy()
-    };
-
-    this.yArraySynchronizerMock = function(channel, messages, callback) {
-      callback(yList);
-    };
-
-    var yArraySynchronizer = function(channel, messages, callback) {
-      return self.yArraySynchronizerMock(channel, messages, callback);
-    };
-
-    message = { foo: 'bar' };
-
-    module(function($provide) {
-      $provide.value('yArraySynchronizer', yArraySynchronizer);
-      $provide.value('yjsService', yService);
-    });
-
-    inject(function(_$rootScope_) {
-      $rootScope = _$rootScope_;
-    });
-
-  });
-
-  it('should have the right properties', function() {
-    inject(function(chat) {
-      chatFactory = chat;
-    });
-    expect(chatFactory).to.have.property('yMessages');
-    expect(chatFactory).to.have.property('messages');
-    expect(chatFactory).to.have.property('opened')
-      .and.to.equal(false);
-    expect(chatFactory).to.have.property('unread')
-      .and.to.equal(0);
-  });
-
-  describe('the sendMessage method', function() {
-    beforeEach(function() {
-      inject(function(chat) {
-        chatFactory = chat;
-      });
-    });
-
-    it('should fail if no message is provided', function() {
-
-      var test = function() {
-        chatFactory.sendMessage();
+      var yService = function() {
+        return self.yServiceData;
       };
-      expect(test).to.throw(/No message provided/);
-    });
-
-    it('should push the message in the yjs list', function() {
-      chatFactory.sendMessage(message);
-      expect(yList.push).to.have.been.called.with(message);
-    });
-
-    it('should broadcast a chat:message:sent', function(done) {
-      $rootScope.$on('chat:message:sent', function() { done(); });
-      chatFactory.sendMessage(message);
-      $rootScope.$digest();
-    });
-  });
-
-  describe('the toggleWindow method', function() {
-    var self = this;
-    beforeEach(function() {
-      inject(function(chat) {
-        chatFactory = chat;
-      });
-    });
-
-    it('should toggle the opened boolean', function() {
-      expect(chatFactory.opened).to.be.false;
-      chatFactory.toggleWindow();
-      expect(chatFactory.opened).to.be.true;
-      chatFactory.toggleWindow();
-      expect(chatFactory.opened).to.be.false;
-    });
-
-    describe('unread messages count', function() {
-      it('should be reset when opened becomes true', function() {
-        chatFactory.unread = 42;
-        chatFactory.toggleWindow();
-        expect(chatFactory.unread).to.equal(0);
-      });
-    });
-
-    it('should emit chat:window:visibility event on window opening', function(done) {
-      $rootScope.$on('chat:window:visibility', function(evt, data) {
-        expect(data).to.deep.equal({visible: true});
-        done();
-      });
-      chatFactory.toggleWindow();
-    });
-    it('should emit chat:window:visibility event on window closing', function(done) {
-      chatFactory.toggleWindow();
-      $rootScope.$on('chat:window:visibility', function(evt, data) {
-        expect(data).to.deep.equal({visible: false});
-        done();
-      });
-      chatFactory.toggleWindow();
-    });
-  });
-
-  describe('initialization code', function() {
-    it('should register a yArraySynchronizer array', function(done) {
-      this.yArraySynchronizerMock = function(channel, messages, callback) {
-        expect(channel).to.equal('chat:messages');
-        expect(messages).to.be.an('array');
-        expect(messages).to.have.length(0);
-        expect(callback).to.be.a('function');
-        done();
+      this.$window = {
+        Y: {
+          List: function() {
+          }
+        }
       };
-      inject(function(chat) {
-        chatFactory = chat;
+
+      module(function($provide) {
+        $provide.value('yjsService', yService);
+        $provide.value('$window', self.$window);
+      });
+      inject(function(yArraySynchronizer) {
+        self.yArraySynchronizer = yArraySynchronizer;
+      });
+
+      ylist = {
+        observe: function() {
+        }
+      };
+
+    });
+
+    it('should call the callback when yjs isSynced is called', function() {
+      this.yServiceData.y = {
+        val: function() {
+          return ylist;
+        }
+      };
+
+      var spy = chai.spy();
+      this.yArraySynchronizer('test', [], spy);
+      expect(spy).to.been.called.with(ylist);
+    });
+
+    it('should create a new YList when the val does not exist', function(done) {
+      var myTab = [];
+
+      this.yServiceData.y = {
+        val: function() {
+          return undefined;
+        }
+      };
+
+      this.$window.Y.List = function(t) {
+        expect(t).to.equal(myTab);
+        done();
+        return ylist;
+      };
+
+      this.yArraySynchronizer('test', myTab);
+    });
+
+    it('should not create a new YList when the val exists', function(done) {
+      var myTab = [];
+
+      this.yServiceData.y = {
+        val: function() {
+          return ylist;
+        }
+      };
+
+      this.$window.Y.List = function(t) {
+        expect(t).to.equal(myTab);
+        done(new Error('new ylist creation'));
+        return ylist;
+      };
+
+      this.yArraySynchronizer('test', myTab, function() {
+        done();
       });
     });
 
-    describe('yjs events handler', function() {
-      beforeEach(function() {
-        var self = this;
-        this.yArraySynchronizerMock = function(channel, messages, callback) {
-          callback({
-            observe: function(callback) {
-              self.handler = callback;
+  });
+
+  describe('the chat factory', function() {
+    var chatFactory, yList, $rootScope, message;
+
+    beforeEach(module('esn.chat'));
+    beforeEach(function() {
+      var self = this;
+      var yService = function() {
+        return {
+          connector: {
+            whenSynced: function(callback) {
+              callback();
             }
-          });
+          }
+        };
+      };
+
+      yList = {
+        val: chai.spy(),
+        observe: chai.spy(),
+        push: chai.spy()
+      };
+
+      this.yArraySynchronizerMock = function(channel, messages, callback) {
+        callback(yList);
+      };
+
+      var yArraySynchronizer = function(channel, messages, callback) {
+        return self.yArraySynchronizerMock(channel, messages, callback);
+      };
+
+      message = {foo: 'bar'};
+
+      module(function($provide) {
+        $provide.value('yArraySynchronizer', yArraySynchronizer);
+        $provide.value('yjsService', yService);
+      });
+
+      inject(function(_$rootScope_) {
+        $rootScope = _$rootScope_;
+      });
+
+    });
+
+    it('should have the right properties', function() {
+      inject(function(chat) {
+        chatFactory = chat;
+      });
+      expect(chatFactory).to.have.property('yMessages');
+      expect(chatFactory).to.have.property('messages');
+      expect(chatFactory).to.have.property('opened')
+        .and.to.equal(false);
+      expect(chatFactory).to.have.property('unread')
+        .and.to.equal(0);
+    });
+
+    describe('the sendMessage method', function() {
+      beforeEach(function() {
+        inject(function(chat) {
+          chatFactory = chat;
+        });
+      });
+
+      it('should fail if no message is provided', function() {
+
+        var test = function() {
+          chatFactory.sendMessage();
+        };
+        expect(test).to.throw(/No message provided/);
+      });
+
+      it('should push the message in the yjs list', function() {
+        chatFactory.sendMessage(message);
+        expect(yList.push).to.have.been.called.with(message);
+      });
+
+      it('should broadcast a chat:message:sent', function(done) {
+        $rootScope.$on('chat:message:sent', function() {
+          done();
+        });
+        chatFactory.sendMessage(message);
+        $rootScope.$digest();
+      });
+    });
+
+    describe('the toggleWindow method', function() {
+      var self = this;
+      beforeEach(function() {
+        inject(function(chat) {
+          chatFactory = chat;
+        });
+      });
+
+      it('should toggle the opened boolean', function() {
+        expect(chatFactory.opened).to.be.false;
+        chatFactory.toggleWindow();
+        expect(chatFactory.opened).to.be.true;
+        chatFactory.toggleWindow();
+        expect(chatFactory.opened).to.be.false;
+      });
+
+      describe('unread messages count', function() {
+        it('should be reset when opened becomes true', function() {
+          chatFactory.unread = 42;
+          chatFactory.toggleWindow();
+          expect(chatFactory.unread).to.equal(0);
+        });
+      });
+
+      it('should emit chat:window:visibility event on window opening', function(done) {
+        $rootScope.$on('chat:window:visibility', function(evt, data) {
+          expect(data).to.deep.equal({visible: true});
+          done();
+        });
+        chatFactory.toggleWindow();
+      });
+      it('should emit chat:window:visibility event on window closing', function(done) {
+        chatFactory.toggleWindow();
+        $rootScope.$on('chat:window:visibility', function(evt, data) {
+          expect(data).to.deep.equal({visible: false});
+          done();
+        });
+        chatFactory.toggleWindow();
+      });
+    });
+
+    describe('initialization code', function() {
+      it('should register a yArraySynchronizer array', function(done) {
+        this.yArraySynchronizerMock = function(channel, messages, callback) {
+          expect(channel).to.equal('chat:messages');
+          expect(messages).to.be.an('array');
+          expect(messages).to.have.length(0);
+          expect(callback).to.be.a('function');
+          done();
         };
         inject(function(chat) {
           chatFactory = chat;
         });
       });
 
-      it('should loop over events array and send rootScope events', function() {
-        var events = [
-          {
-            type: 'insert',
-            value: 'test1',
-            position: 0
-          },
-          {
-            type: 'insert',
-            value: 'test2',
-            position: 2
-          }
-        ];
-
-        var received = [];
-        $rootScope.$on('chat:message:received', function(evt, data) {
-          received.push(data);
+      describe('yjs events handler', function() {
+        beforeEach(function() {
+          var self = this;
+          this.yArraySynchronizerMock = function(channel, messages, callback) {
+            callback({
+              observe: function(callback) {
+                self.handler = callback;
+              }
+            });
+          };
+          inject(function(chat) {
+            chatFactory = chat;
+          });
         });
-        this.handler(events);
-        expect(received).to.deep.equal(['test1', 'test2']);
-      });
 
-      it('should increment the unread count if the window is not opened', function() {
-        var events = [
-          {
-            type: 'insert',
-            value: 'test1',
-            position: 0
-          },
-          {
-            type: 'insert',
-            value: 'test2',
-            position: 2
-          }
-        ];
+        it('should loop over events array and send rootScope events', function() {
+          var events = [
+            {
+              type: 'insert',
+              value: 'test1',
+              position: 0
+            },
+            {
+              type: 'insert',
+              value: 'test2',
+              position: 2
+            }
+          ];
 
-        var received = [];
-        expect(chatFactory.opened).to.be.false;
-        $rootScope.$on('chat:message:received', function(evt, data) {
-          received.push(data);
+          var received = [];
+          $rootScope.$on('chat:message:received', function(evt, data) {
+            received.push(data);
+          });
+          this.handler(events);
+          expect(received).to.deep.equal(['test1', 'test2']);
         });
-        this.handler(events);
-        expect(chatFactory.unread).to.equal(2);
-      });
 
-      it('should not increment the unread count if the window is opened', function() {
-        var events = [
-          {
-            type: 'insert',
-            value: 'test1',
-            position: 0
-          },
-          {
-            type: 'insert',
-            value: 'test2',
-            position: 2
-          }
-        ];
+        it('should increment the unread count if the window is not opened', function() {
+          var events = [
+            {
+              type: 'insert',
+              value: 'test1',
+              position: 0
+            },
+            {
+              type: 'insert',
+              value: 'test2',
+              position: 2
+            }
+          ];
 
-        var received = [];
-        chatFactory.toggleWindow();
-        expect(chatFactory.opened).to.be.true;
-        $rootScope.$on('chat:message:received', function(evt, data) {
-          received.push(data);
+          var received = [];
+          expect(chatFactory.opened).to.be.false;
+          $rootScope.$on('chat:message:received', function(evt, data) {
+            received.push(data);
+          });
+          this.handler(events);
+          expect(chatFactory.unread).to.equal(2);
         });
-        this.handler(events);
-        expect(chatFactory.unread).to.equal(0);
+
+        it('should not increment the unread count if the window is opened', function() {
+          var events = [
+            {
+              type: 'insert',
+              value: 'test1',
+              position: 0
+            },
+            {
+              type: 'insert',
+              value: 'test2',
+              position: 2
+            }
+          ];
+
+          var received = [];
+          chatFactory.toggleWindow();
+          expect(chatFactory.opened).to.be.true;
+          $rootScope.$on('chat:message:received', function(evt, data) {
+            received.push(data);
+          });
+          this.handler(events);
+          expect(chatFactory.unread).to.equal(0);
+        });
       });
     });
-  });
 
+  });
 });

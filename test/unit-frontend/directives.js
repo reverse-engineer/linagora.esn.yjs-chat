@@ -121,4 +121,104 @@ describe('Directives', function() {
     });
   });
 
+  describe('The chatMessageAvatar directive', function() {
+
+    beforeEach(function() {
+
+      this.messageAvatarService = {};
+      var self = this;
+
+      module('jadeTemplates');
+      angular.mock.module('esn.chat');
+
+      angular.mock.module(function($provide) {
+        $provide.value('messageAvatarService', self.messageAvatarService);
+      });
+    });
+
+    beforeEach(inject(['$compile', '$rootScope', 'DEFAULT_AVATAR', function($c, $r, DEFAULT_AVATAR) {
+      this.$compile = $c;
+      this.$rootScope = $r;
+      this.$scope = this.$rootScope.$new();
+      this.DEFAULT_AVATAR = DEFAULT_AVATAR;
+
+      this.initDirective = function(scope) {
+        var html = '<chat-message-avatar chat-message="chatMessage"/>';
+        var element = this.$compile(html)(scope);
+        scope.$digest();
+        return element;
+      };
+    }]));
+
+    it('should not call messageAvatarService.generate when message.authorAvatar is defined', function(done) {
+      this.$scope.chatMessage = {
+        author: 1,
+        authorAvatar: 123
+      };
+
+      this.messageAvatarService.generate = function() {
+        done(new Error());
+      };
+      this.initDirective(this.$scope);
+      this.$scope.$digest();
+      done();
+    });
+
+    it('should call messageAvatarService.generate', function(done) {
+      this.$scope.chatMessage = {
+        author: 1
+      };
+
+      this.messageAvatarService.generate = function() {
+        done();
+      };
+      this.initDirective(this.$scope);
+      this.$scope.$digest();
+    });
+
+    it('should put the DEFAULT_AVATAR if messageAvatarService.generate fails', function() {
+      this.$scope.chatMessage = {
+        author: 1
+      };
+
+      this.messageAvatarService.generate = function(attendee, callback) {
+        return callback(new Error());
+      };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.avatar).to.equal(this.DEFAULT_AVATAR);
+    });
+
+    it('should put the DEFAULT_AVATAR if messageAvatarService.generate returns null', function() {
+      this.$scope.chatMessage = {
+        author: 1
+      };
+
+      this.messageAvatarService.generate = function(attendee, callback) {
+        return callback();
+      };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.avatar).to.equals(this.DEFAULT_AVATAR);
+    });
+
+    it('should put the avatar returned by messageAvatarService.generate', function() {
+      this.$scope.chatMessage = {
+        author: 1
+      };
+      var result = 'A';
+
+      this.messageAvatarService.generate = function(attendee, callback) {
+        return callback(null, result);
+      };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.avatar).to.equals(result);
+    });
+  });
+
+
 });
