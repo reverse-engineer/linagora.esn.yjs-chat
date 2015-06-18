@@ -220,9 +220,6 @@ describe('Directives', function() {
     });
   });
 
-
-});
-
   describe('chatIcon', function() {
     var chat;
     var scope;
@@ -280,3 +277,78 @@ describe('Directives', function() {
     });
 
   });
+
+  describe('The chatWindow directive', function() {
+    beforeEach(function() {
+      angular.mock.module(function($provide) {
+        $provide.value('chat', {});
+        $provide.value('chatMessageEditorDirective', function() {});
+        $provide.value('chatMessageDisplayDirective', function() {});
+      });
+    });
+
+    beforeEach(inject(function($rootScope, $compile, CHAT_WINDOW_SIZE) {
+      this.scope = $rootScope.$new();
+      this.$rootScope = $rootScope;
+      this.CHAT_WINDOW_SIZE = CHAT_WINDOW_SIZE;
+      this.chatWindow = $compile('<chat-window></chat-window>')(this.scope);
+      $rootScope.$digest();
+    }));
+
+    it('should display the chat window when receiving chat:window:visibility with visible set to true', function() {
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
+
+      expect(this.chatWindow.hasClass('visible')).to.be.true;
+      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
+      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
+    });
+
+    it('should hide the chat window when receiving chat:window:visibility with visible set to false', function() {
+      this.chatWindow.addClass('visible');
+      this.chatWindow.css('width', '30%');
+      this.chatWindow.css('height', '50%');
+
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: false});
+
+      expect(this.chatWindow.hasClass('visible')).to.be.false;
+      expect(this.chatWindow.css('width')).to.equal('0px');
+      expect(this.chatWindow.css('height')).to.equal('0px');
+    });
+
+    it('should do nothing when sending visible true twice', function() {
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
+
+      expect(this.chatWindow.hasClass('visible')).to.be.true;
+      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
+      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
+
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
+
+      expect(this.chatWindow.hasClass('visible')).to.be.true;
+      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
+      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
+    });
+
+    it('should emit attendeesBarSize with the width when displaying', function(done) {
+      var self = this;
+
+      this.$rootScope.$on('attendeesBarSize', function(event, data) {
+        expect(data).to.exist;
+        expect(data.width).to.equal(self.CHAT_WINDOW_SIZE.width + 2);
+        done();
+      });
+
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
+    });
+
+    it('should emit attendeesBarSize with width = 0 when closing', function(done) {
+      this.$rootScope.$on('attendeesBarSize', function(event, data) {
+        expect(data).to.exist;
+        expect(data.width).to.equal(0);
+        done();
+      });
+
+      this.$rootScope.$broadcast('chat:window:visibility', {visible: false});
+    });
+  });
+});
