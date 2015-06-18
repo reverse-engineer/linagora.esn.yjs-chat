@@ -4,4 +4,4 @@
   .media-body
     h4.media-heading {{::chatMessage.author}}
     small {{::chatMessage.published}}
-    p {{::chatMessage.message}}
+    p {{::chatMessage.message | autolink}}

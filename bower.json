@@ -18,7 +18,8 @@
   ],
   "dependencies": {
     "angular-truncate": "sparkalow/angular-truncate",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "Autolinker.js": "~0.17.2"
   },
   "devDependencies": {
     "chai": "~3.0.0",
