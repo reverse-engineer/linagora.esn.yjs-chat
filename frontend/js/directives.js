@@ -31,7 +31,7 @@ angular.module('esn.chat')
       };
 
       var unregisterFn = $rootScope.$on('chat:message:received', function(event, data) {
-        if (data.author === easyrtcService.myEasyrtcId) {
+        if (data.author !== easyrtcService.myEasyrtcId()) {
           popoverConfiguration.title = data.published;
           popoverConfiguration.content = data.message;
           var popover = $popover(element, popoverConfiguration);

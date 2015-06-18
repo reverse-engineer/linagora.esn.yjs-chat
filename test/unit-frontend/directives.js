@@ -26,7 +26,7 @@ describe('Directives', function() {
         };
       };
       easyrtcService = {
-        myEasyrtcId: '12345'
+        myEasyrtcId: function() { return '12345'; }
       };
       $provide.value('$popover', $popover);
       $provide.value('easyrtcService', easyrtcService);
@@ -43,8 +43,8 @@ describe('Directives', function() {
       $compile('<chat-message-bubble/>')(scope);
     });
 
-    it('should register chat:message:received with $rootScope and toggle popover', function() {
-      var message = new ChatMessage({ author: '12345', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
+    it('should register chat:message:received with $rootScope and toggle popover if author is not current user', function() {
+      var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
@@ -57,8 +57,8 @@ describe('Directives', function() {
       });
     });
 
-    it('should do nothing if the easyrtcid does not match', function() {
-      var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' });
+    it('should do nothing if if author is current user', function() {
+      var message = new ChatMessage({ author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' });
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
