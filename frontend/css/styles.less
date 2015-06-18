@@ -1,26 +1,26 @@
-.chat-window-wrapper.visible {
-  display: flex;
-}
+@chat-window-width: 300px;
+@chat-window-height: 250px;
+@user-control-bar-height: 50px;
+@screen-md: 992px;
 
 .chat-window-wrapper {
   display: none;
   position: absolute;
-  bottom: 50px;
-  right: 10px;
+  bottom: @user-control-bar-height;
+  right: 2px;
   z-index: 5;
 
   background-color: rgba(0, 0, 0, .7);
 
-  .container-fluid {
-    width: 100%;
+  width: @chat-window-width;
+  height: @chat-window-height;
+
+  @media screen and (min-width: @screen-md) {
+      height: 100%;
+      bottom: 0;
   }
 
-  .header {
-    background-color: #336DBE;
-  }
-
-  .body {
-    overflow: scroll;
-    height: 100%;
+  &.visible {
+    display: block;
   }
 }
