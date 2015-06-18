@@ -1,0 +1,8 @@
+'use strict';
+
+angular.module('esn.chat')
+  .filter('autolink', function($window) {
+    return function(text) {
+      return $window.Autolinker.link(text, { className: 'autolink' });
+    };
+  });
