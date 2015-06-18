@@ -10,6 +10,8 @@ module.exports = function(config) {
       'frontend/components/angular/angular.js',
       'frontend/components/angular-mocks/angular-mocks.js',
       'frontend/components/chai/chai.js',
+      'frontend/components/chai-spies/chai-spies.js',
+      'frontend/components/awesome-yjs/frontend/js/angular-yjs.js',
       'test/module.js',
       'test/unit-frontend/**/*.js',
       'frontend/js/**/*.js',
