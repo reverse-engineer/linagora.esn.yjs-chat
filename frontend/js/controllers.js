@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('chat')
+angular.module('esn.chat')
   .controller('chatController', function($log, $scope, chatAPI) {
     $scope.chatName = 'Let\'s Chat!';
 

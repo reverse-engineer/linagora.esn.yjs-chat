@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('chat', ['op.live-conference']);
+angular.module('esn.chat', ['op.live-conference', 'yjs']);

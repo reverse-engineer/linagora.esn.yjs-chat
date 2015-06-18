@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('chat')
+angular.module('esn.chat')
   .directive('chatToggleElement', function($popover) {
       function link(scope, element) {
         var conf = {

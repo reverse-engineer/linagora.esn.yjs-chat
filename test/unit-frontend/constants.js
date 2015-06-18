@@ -8,7 +8,7 @@ describe('Constants', function() {
 
   var injector;
 
-  beforeEach(module('chat'));
+  beforeEach(module('esn.chat'));
 
   beforeEach(inject(function($injector) {
     injector = $injector;
