@@ -3,7 +3,7 @@ div.chat-window-wrapper(ng-controller='chatController')
     .row.header
       .col-xs-12
         span "Room" chat
-        button.close(type="button") &times;
+        button.close(type="button", ng-click='close()') &times;
     .row.body
       .col-xs-12
         div(ng-repeat="message in messages")
