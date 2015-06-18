@@ -1,4 +1,5 @@
 'use strict';
 
 angular.module('chat')
-  .constant('BEST_CONSTANT', 42);
+  .constant('CHAT_AVATAR_SIZE', 48)
+  .constant('CHAT_WINDOW_SIZE', 330);
