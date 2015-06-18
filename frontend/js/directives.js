@@ -108,4 +108,15 @@ angular.module('esn.chat')
         },
         link: link
       };
-    }]);
+    }])
+
+  .directive('chatIcon', ['chat', function(chat) {
+    function link(scope) {
+      scope.chat = chat;
+    }
+    return {
+      restrict: 'E',
+      link: link,
+      templateUrl: '/chat/views/button.html'
+    };
+  }]);

@@ -1,4 +1,5 @@
-li(live-conference-editor-controller)
-  a(href="", ng-click="toggleChat()")
+li()
+  a(href="", ng-click="chat.toggleWindow()")
     span.notificationButton.conference-light-button
       i.fa.fa-comments.fa-2x
+      span.badge(ng-show='!chat.opened && chat.unread!=0') {{chat.unread}}
