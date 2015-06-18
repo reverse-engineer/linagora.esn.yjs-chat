@@ -28,8 +28,9 @@ var AwesomeChatModule = new AwesomeModule('linagora.esn.chat', {
         'controllers.js',
         'constants.js',
         'directives.js'
-      ], 'esn.chat', 'live-conference');
+      ], ['truncate', 'esn.chat'], 'live-conference');
       webserver.injectCSS('chat', 'styles.css', 'live-conference');
+      webserver.injectJS('chat', '../components/angular-truncate/src/truncate.js', 'live-conference');
       webserver.addApp('chat', application);
 
       return callback(null, {});
