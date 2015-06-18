@@ -72,6 +72,35 @@ describe('Directives', function() {
       expect(called).to.equal(0);
     });
 
+    it('should do nothing if canBeDisplayed is false even if author is current attendee', function() {
+      var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
+      $rootScope.$broadcast('chat:window:visibility', { visible: true });
+      $rootScope.$digest();
+
+      $rootScope.$broadcast('chat:message:received', message);
+      $rootScope.$digest();
+
+      expect(called).to.equal(0);
+
+      $rootScope.$broadcast('chat:window:visibility', { visible: false });
+      $rootScope.$digest();
+
+      $rootScope.$broadcast('chat:message:received', message);
+      $rootScope.$digest();
+
+      expect(called).to.equal(1);
+      expect(config).to.deep.equal({
+        placement: 'top',
+        delay: { show: 100, hide: 200 },
+        content: 'a new message',
+        container: 'body',
+        contentTemplate: '/chat/views/bubble.html',
+        animation: 'am-flip-x'
+      });
+      $timeout.flush();
+      expect(called).to.equal(2);
+    });
+
   });
 
   describe('the chatMessageEditor directive', function() {

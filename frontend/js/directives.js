@@ -3,6 +3,7 @@
 angular.module('esn.chat')
 
   .directive('chatMessageBubble', function($timeout, $rootScope, $popover, CHAT_POPOVER_DELAY, CHAT_HIDE_TIMEOUT) {
+    var canBeDisplayed = true;
 
     function link(scope, element) {
       var popoverConfiguration = {
@@ -14,12 +15,16 @@ angular.module('esn.chat')
       };
 
       scope.$on('chat:message:received', function(event, data) {
-        if ((scope.attendee && data.author === scope.attendee.easyrtcid)) {
+        if (canBeDisplayed && (scope.attendee && data.author === scope.attendee.easyrtcid)) {
           popoverConfiguration.content = data.message;
           var popover = $popover(element, popoverConfiguration);
           popover.toggle();
           $timeout(popover.toggle, CHAT_HIDE_TIMEOUT);
         }
+      });
+
+      scope.$on('chat:window:visibility', function(evt, data) {
+        canBeDisplayed = !data.visible;
       });
     }
 
