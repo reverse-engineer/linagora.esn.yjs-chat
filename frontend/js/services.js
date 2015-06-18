@@ -100,7 +100,11 @@ angular.module('esn.chat')
           events.forEach(function(event) {
             if (event.type === 'insert') {
               $rootScope.$broadcast('chat:message:received', event.value);
-              ret.unread = ret.opened ? 0 : ret.unread + 1;
+              if (ret.opened) {
+                ret.unread = 0;
+              } else {
+                ret.unread++;
+              }
             } else if (event.type === 'update') {
               // Don't do anything for now!
             } else if (event.type === 'delete') {
