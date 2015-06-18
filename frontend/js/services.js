@@ -96,11 +96,7 @@ angular.module('esn.chat')
       return ret;
     }])
 
-    .factory('newCanvas', function() {
-      return document.createElement('canvas');
-    })
-
-    .factory('messageAvatarService', ['$window', 'newCanvas', 'currentConferenceState', 'attendeeColorsService', 'drawHelper', 'CHAT_AVATAR_SIZE', 'DEFAULT_AVATAR', function($window, newCanvas, currentConferenceState, attendeeColorsService, drawHelper, CHAT_AVATAR_SIZE, DEFAULT_AVATAR) {
+    .factory('messageAvatarService', ['newCanvas', 'currentConferenceState', 'attendeeColorsService', 'drawHelper', 'CHAT_AVATAR_SIZE', 'DEFAULT_AVATAR', function(newCanvas, currentConferenceState, attendeeColorsService, drawHelper, CHAT_AVATAR_SIZE, DEFAULT_AVATAR) {
 
       function generate(author, callback) {
 
@@ -114,7 +110,7 @@ angular.module('esn.chat')
             return callback(null, DEFAULT_AVATAR);
           }
 
-          var canvas = newCanvas();
+          var canvas = newCanvas(CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
           var context = canvas.getContext('2d');
           context.fillStyle = attendeeColorsService.getColorForAttendeeAtIndex(attendee.index);
           drawHelper.drawImage(context, image, 0, 0, CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
