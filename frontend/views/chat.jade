@@ -1,3 +1,12 @@
-div(ng-controller='chatController')
-  p.strong.chat #{__('Welcome in')} {{chatName}} {{number}}
-  chat-message-editor
+div.chat-window-wrapper(ng-controller='chatController')
+  .container-fluid
+    .row.header
+      .col-xs-12
+        span "Room" chat
+        button.close(type="button") &times;
+    .row.body
+      .col-xs-12
+        div(ng-repeat="message in messages")
+          chat-message-display(chat-message="message")
+    .row.footer
+      chat-message-editor
