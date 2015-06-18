@@ -29,7 +29,7 @@ var AwesomeChatModule = new AwesomeModule('linagora.esn.chat', {
         'constants.js',
         'directives.js'
       ], 'chat', 'live-conference');
-      webserver.injectCSS('chat', 'style.css', 'live-conference');
+      webserver.injectCSS('chat', 'styles.css', 'live-conference');
       webserver.addApp('chat', application);
 
       return callback(null, {});
