@@ -3,6 +3,6 @@
 angular.module('esn.chat')
   .constant('CHAT_AVATAR_SIZE', 48)
   .constant('CHAT_WINDOW_SIZE', { width: 30, height: 50 })
-  .constant('CHAT_POPOVER_DELAY', { show: 1000, hide: 200 })
-  .constant('DEFAULT_AVATAR', '/images/avatar/default.png');
-
+  .constant('CHAT_POPOVER_DELAY', { show: 100, hide: 200 })
+  .constant('DEFAULT_AVATAR', '/images/avatar/default.png')
+  .constant('CHAT_HIDE_TIMEOUT', 4000);
