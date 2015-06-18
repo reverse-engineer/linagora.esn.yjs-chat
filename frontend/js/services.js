@@ -15,4 +15,15 @@ angular.module('chat')
     return {
       getChat: getChat
     };
+  })
+  .factory('ChatMessage', function() {
+
+    function ChatMessage(object) {
+      this.author = object.author;
+      this.authorAvatar = object.authorAvatar;
+      this.published = object.authorAvatar;
+      this.message = object.message;
+    }
+
+    return ChatMessage;
   });
