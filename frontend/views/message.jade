@@ -1,0 +1,7 @@
+.col-xs-12.media.message
+  .media-left
+    chat-message-avatar(chat-message="chatMessage")
+  .media-body
+    h4.media-heading {{::chatMessage.author}}
+    small {{::chatMessage.published}}
+    p {{::chatMessage.message}}

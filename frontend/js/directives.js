@@ -73,4 +73,39 @@ angular.module('esn.chat')
         templateUrl: '/chat/views/chat-message-editor.html',
         link: link
       };
+    }])
+
+    .directive('chatMessageDisplay', [function() {
+
+      return {
+        restrict: 'E',
+        templateUrl: '/chat/views/message.html',
+        scope: {
+          chatMessage: '='
+        }
+      };
+    }])
+
+    .directive('chatMessageAvatar', ['messageAvatarService', 'DEFAULT_AVATAR', function(messageAvatarService, DEFAULT_AVATAR) {
+
+      function link($scope) {
+
+        if ($scope.chatMessage.authorAvatar) {
+          $scope.avatar = $scope.chatMessage.authorAvatar;
+          return;
+        }
+
+        messageAvatarService.generate($scope.chatMessage.author, function(err, avatar) {
+          $scope.avatar = err || !avatar ? DEFAULT_AVATAR : avatar;
+        });
+      }
+
+      return {
+        restrict: 'E',
+        templateUrl: '/chat/views/avatar.html',
+        scope: {
+          chatMessage: '='
+        },
+        link: link
+      };
     }]);
