@@ -9,7 +9,8 @@ angular.module('esn.chat')
         placement: 'top',
         delay: CHAT_POPOVER_DELAY,
         container: 'body',
-        contentTemplate: '/chat/views/bubble.html'
+        contentTemplate: '/chat/views/bubble.html',
+        animation: 'am-flip-x'
       };
 
       scope.$on('chat:message:received', function(event, data) {

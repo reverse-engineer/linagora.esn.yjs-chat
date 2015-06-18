@@ -57,7 +57,8 @@ describe('Directives', function() {
         delay: { show: 100, hide: 200 },
         content: 'a new message',
         container: 'body',
-        contentTemplate: '/chat/views/bubble.html'
+        contentTemplate: '/chat/views/bubble.html',
+        animation: 'am-flip-x'
       });
       $timeout.flush();
       expect(called).to.equal(2);
