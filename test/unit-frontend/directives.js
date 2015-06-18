@@ -282,9 +282,13 @@ describe('Directives', function() {
   });
 
   describe('The chatWindow directive', function() {
+    var chat;
+
     beforeEach(function() {
+      chat = {};
+
       angular.mock.module(function($provide) {
-        $provide.value('chat', {});
+        $provide.value('chat', chat);
         $provide.value('chatMessageEditorDirective', function() {});
         $provide.value('chatMessageDisplayDirective', function() {});
       });
@@ -352,6 +356,12 @@ describe('Directives', function() {
       });
 
       this.$rootScope.$broadcast('chat:window:visibility', {visible: false});
+    });
+
+    it('should toggle the window when the close button is clicked', function(done) {
+      chat.toggleWindow = done;
+
+      this.chatWindow.find('.close').click();
     });
   });
 });
