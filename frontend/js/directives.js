@@ -103,30 +103,13 @@ angular.module('esn.chat')
 
   .directive('chatWindow', function($rootScope, CHAT_WINDOW_SIZE) {
     function link(scope, element, attrs) {
-      var width = CHAT_WINDOW_SIZE.width;
-      var height = CHAT_WINDOW_SIZE.height;
-
-      function showChatWindow(width, height) {
-        width = Math.min(100, Math.max(0, width));
-        height = Math.min(100, Math.max(0, height));
-        element.css('width', width + '%');
-        element.css('height', height + '%');
-        element.addClass('visible');
-        $rootScope.$emit('attendeesBarSize', {width: width + 2});
-      }
-
-      function hideChatWindow() {
-        element.css('width', '0');
-        element.css('height', '0');
-        element.removeClass('visible');
-        $rootScope.$emit('attendeesBarSize', {width: 0});
-      }
-
       scope.$on('chat:window:visibility', function(evt, data) {
         if (data.visible) {
-          showChatWindow(width, height);
+          element.addClass('visible');
+          $rootScope.$emit('attendeesBarSize', {marginRight: CHAT_WINDOW_SIZE.width + 'px'});
         } else {
-          hideChatWindow();
+          element.removeClass('visible');
+          $rootScope.$emit('attendeesBarSize', {marginRight: '0'});
         }
       });
     }

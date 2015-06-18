@@ -304,36 +304,20 @@ describe('Directives', function() {
 
     it('should display the chat window when receiving chat:window:visibility with visible set to true', function() {
       this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
-
       expect(this.chatWindow.hasClass('visible')).to.be.true;
-      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
-      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
     });
 
     it('should hide the chat window when receiving chat:window:visibility with visible set to false', function() {
       this.chatWindow.addClass('visible');
-      this.chatWindow.css('width', '30%');
-      this.chatWindow.css('height', '50%');
-
       this.$rootScope.$broadcast('chat:window:visibility', {visible: false});
 
       expect(this.chatWindow.hasClass('visible')).to.be.false;
-      expect(this.chatWindow.css('width')).to.equal('0px');
-      expect(this.chatWindow.css('height')).to.equal('0px');
     });
 
     it('should do nothing when sending visible true twice', function() {
       this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
-
-      expect(this.chatWindow.hasClass('visible')).to.be.true;
-      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
-      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
-
       this.$rootScope.$broadcast('chat:window:visibility', {visible: true});
-
       expect(this.chatWindow.hasClass('visible')).to.be.true;
-      expect(this.chatWindow.css('width')).to.equal(this.CHAT_WINDOW_SIZE.width + '%');
-      expect(this.chatWindow.css('height')).to.equal(this.CHAT_WINDOW_SIZE.height + '%');
     });
 
     it('should emit attendeesBarSize with the width when displaying', function(done) {
@@ -341,7 +325,7 @@ describe('Directives', function() {
 
       this.$rootScope.$on('attendeesBarSize', function(event, data) {
         expect(data).to.exist;
-        expect(data.width).to.equal(self.CHAT_WINDOW_SIZE.width + 2);
+        expect(data.marginRight).to.equal(self.CHAT_WINDOW_SIZE.width + 'px');
         done();
       });
 
@@ -351,7 +335,7 @@ describe('Directives', function() {
     it('should emit attendeesBarSize with width = 0 when closing', function(done) {
       this.$rootScope.$on('attendeesBarSize', function(event, data) {
         expect(data).to.exist;
-        expect(data.width).to.equal(0);
+        expect(data.marginRight).to.equal('0');
         done();
       });
 
