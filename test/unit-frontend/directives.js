@@ -12,10 +12,10 @@ describe('Directives', function() {
   });
 
   describe('The chatMessageBubble directive', function() {
-    var $rootScope, $compile, $popover, ChatMessage, called, config, easyrtcService;
+    var $rootScope, $compile, $popover, ChatMessage, called, config, $timeout;
 
     beforeEach(function() {
-      called = false;
+      called = 0;
       config = {};
     });
 
@@ -23,49 +23,52 @@ describe('Directives', function() {
       $popover = function(element, popoverConfiguration) {
         return {
           toggle: function() {
-            called = true;
+            called++;
             config = popoverConfiguration
           }
         };
       };
-      easyrtcService = {
-        myEasyrtcId: function() { return '12345'; }
-      };
       $provide.value('$popover', $popover);
-      $provide.value('easyrtcService', easyrtcService);
     }));
 
-    beforeEach(inject(function(_$compile_, _$rootScope_, _ChatMessage_) {
+    beforeEach(inject(function(_$compile_, _$rootScope_, _ChatMessage_, _$timeout_) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       ChatMessage = _ChatMessage_;
+      $timeout = _$timeout_;
     }));
 
     beforeEach(function() {
       var scope = $rootScope.$new();
+      scope.attendee = {
+        easyrtcid: '54321'
+      };
       $compile('<chat-message-bubble/>')(scope);
     });
 
-    it('should register chat:message:received with $rootScope and toggle popover if author is not current user', function() {
+    it('should register chat:message:received with $rootScope and toggle popover if author is current attendee and close after $timeout', function() {
       var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
-      expect(called).to.be.true;
+      expect(called).to.equal(1);
       expect(config).to.deep.equal({
         placement: 'top',
-        delay: { show: 1000, hide: 200 },
+        delay: { show: 100, hide: 200 },
         content: 'a new message',
-        title: 'a new date'
+        container: 'body',
+        contentTemplate: '/chat/views/bubble.html'
       });
+      $timeout.flush();
+      expect(called).to.equal(2);
     });
 
-    it('should do nothing if if author is current user', function() {
+    it('should do nothing if if author is not current attendee', function() {
       var message = new ChatMessage({ author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' });
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
-      expect(called).to.be.false;
+      expect(called).to.equal(0);
     });
 
   });

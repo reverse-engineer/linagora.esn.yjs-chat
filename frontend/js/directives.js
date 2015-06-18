@@ -1,28 +1,29 @@
 'use strict';
 
 angular.module('esn.chat')
-  .directive('chatMessageBubble', function($rootScope, $popover, easyrtcService, CHAT_POPOVER_DELAY) {
+
+  .directive('chatMessageBubble', function($timeout, $rootScope, $popover, CHAT_POPOVER_DELAY, CHAT_HIDE_TIMEOUT) {
 
     function link(scope, element) {
       var popoverConfiguration = {
         placement: 'top',
-        delay: CHAT_POPOVER_DELAY
+        delay: CHAT_POPOVER_DELAY,
+        container: 'body',
+        contentTemplate: '/chat/views/bubble.html'
       };
 
-      var unregisterFn = $rootScope.$on('chat:message:received', function(event, data) {
-        if (data.author !== easyrtcService.myEasyrtcId()) {
-          popoverConfiguration.title = data.published;
+      scope.$on('chat:message:received', function(event, data) {
+        if ((scope.attendee && data.author === scope.attendee.easyrtcid)) {
           popoverConfiguration.content = data.message;
           var popover = $popover(element, popoverConfiguration);
           popover.toggle();
+          $timeout(popover.toggle, CHAT_HIDE_TIMEOUT);
         }
       });
-
-      scope.$on('$destroy', unregisterFn);
     }
 
     return {
-      restrict: 'E',
+      restrict: 'EA',
       link: link
     };
   })
