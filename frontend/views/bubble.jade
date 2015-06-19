@@ -1,1 +1,5 @@
-span {{content | characters:64 :false}}
+.popover
+  .arrow
+  h3.popover-title(ng-bind="title", ng-show="title")
+  .popover-content.popover-cursor(ng-click='openChatBox()')
+    span {{content | characters:64 :false}}

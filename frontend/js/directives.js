@@ -2,7 +2,7 @@
 
 angular.module('esn.chat')
 
-  .directive('chatMessageBubble', function($timeout, $rootScope, $popover, CHAT_POPOVER_DELAY, CHAT_HIDE_TIMEOUT) {
+  .directive('chatMessageBubble', function($timeout, $rootScope, $popover, chat, CHAT_POPOVER_DELAY, CHAT_HIDE_TIMEOUT) {
     var canBeDisplayed = true;
 
     function link(scope, element) {
@@ -10,8 +10,9 @@ angular.module('esn.chat')
         placement: 'top',
         delay: CHAT_POPOVER_DELAY,
         container: 'body',
-        contentTemplate: '/chat/views/bubble.html',
-        animation: 'am-flip-x'
+        template: '/chat/views/bubble.html',
+        animation: 'am-flip-x',
+        scope: scope
       };
 
       scope.$on('chat:message:received', function(event, data) {
@@ -26,6 +27,12 @@ angular.module('esn.chat')
       scope.$on('chat:window:visibility', function(evt, data) {
         canBeDisplayed = !data.visible;
       });
+
+      scope.openChatBox = function() {
+        if (canBeDisplayed) {
+          chat.toggleWindow();
+        }
+      };
     }
 
     return {
