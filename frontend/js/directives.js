@@ -60,13 +60,18 @@ angular.module('esn.chat')
       };
     }])
 
-    .directive('chatMessageDisplay', [function() {
+    .directive('chatMessageDisplay', ['currentConferenceState', function(currentConferenceState) {
 
       return {
         restrict: 'E',
         templateUrl: '/chat/views/message.html',
         scope: {
           chatMessage: '='
+        },
+
+        link: function($scope) {
+          var author = currentConferenceState.getAttendeeByEasyrtcid($scope.chatMessage.author);
+          $scope.author = author && author.displayName ? author.displayName : $scope.chatMessage.author;
         }
       };
     }])
