@@ -130,14 +130,35 @@
     p {
       font-size: 13px;
       margin: 0 0 0.2rem 0;
-      line-height: 1.5;
-      font-weight: bold;
+      line-height: 1;
+      word-break: break-all;
       color: #333;
     }
 
     .author {
-      font-size: 11px;
+      font-size: 12px;
       color: #777;
+      font-weight: bold;
+    }
+
+    .divider {
+      margin: 0 2px;
+    }
+
+    .published {
+      font-style: italic;
+    }
+
+    .avatar {
+      float: left;
+      margin-right: 8px;
+    }
+
+    &.myself {
+      .avatar {
+        float: right;
+        margin-left: 8px;
+      }
     }
   }
 
@@ -163,12 +184,6 @@
   .base-sent {
     justify-content: flex-end;
     align-items: flex-end;
-  }
-
-  .msg-sent {
-    .author {
-      float: right;
-    }
   }
 
   .msg-container-base::-webkit-scrollbar-track {

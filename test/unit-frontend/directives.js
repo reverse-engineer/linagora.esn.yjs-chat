@@ -416,13 +416,21 @@ describe('Directives', function() {
   describe('the chatMessageDisplay directive', function() {
 
     beforeEach(function() {
-      this.currentConferenceState = {};
+      this.currentConferenceState = {
+        getAttendeeByEasyrtcid: function() {}
+      };
+      this.easyRTCServcice = {
+        myEasyrtcid: function() {
+          return 'myself';
+        }
+      };
       var self = this;
 
       angular.mock.module(function($provide) {
         $provide.value('currentConferenceState', self.currentConferenceState);
         $provide.value('chatMessageAvatarDirective', function() {});
         $provide.value('amDateFormatFilter', function() {});
+        $provide.value('easyRTCService', self.easyRTCServcice);
       });
     });
 
@@ -470,14 +478,30 @@ describe('Directives', function() {
     });
 
     it('should set the author value to his message.author when attendee is undefined', function() {
-      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
-        return;
-      };
       this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
       var element = this.initDirective(this.$scope);
       this.$scope.$digest();
       var iscope = element.isolateScope();
       expect(iscope.author).to.equal('12345');
     });
+
+    it('should set $scope.myself to true when message is sent by the local user', function() {
+      this.$scope.message = { author: 'myself' };
+
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+
+      expect(element.isolateScope().myself).to.be.true;
+    });
+
+    it('should set $scope.myself to false when message is sent by a peer', function() {
+      this.$scope.message = { author: 'remote peer' };
+
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+
+      expect(element.isolateScope().myself).to.be.false;
+    });
+
   });
 });
