@@ -2,7 +2,7 @@
   .row.messages.msg-sent
     .row.nopadding
       .col-md-10.col-xs-10.nopadding
-        p {{::chatMessage.message}}
+        p(ng-bind-html="::chatMessage.message | autolink")
       .col-md-2.col-xs-2.nopadding.avatar
         chat-message-avatar(chat-message="chatMessage")
     .row.nopadding
