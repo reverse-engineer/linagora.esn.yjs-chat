@@ -1,12 +1,17 @@
-div.chat-window-wrapper(ng-controller='chatController')
-  .container-fluid
-    .row.header
-      .col-xs-12
-        span "Room" chat
-        button.close(type="button", ng-click='close()') &times;
-    .row.body
-      .col-xs-12
-        div(ng-repeat="message in messages")
-          chat-message-display(chat-message="message")
-    .row.footer
-      chat-message-editor
+.chat-window-wrapper(ng-controller='chatController')
+
+  .chat-window
+    .flexbox-parent
+      .flexbox-item.header
+        .top-bar
+          .col-md-8.col-xs-8
+            h4 #{__("Chat Room")}
+          .col-md-4.col-xs-4.nopadding
+            button.close(type="button", ng-click='close()') &times;
+
+      .flexbox-item.fill-area.content.flexbox-item-grow
+        .fill-area-content.flexbox-item-grow
+          .msg-container-base
+            chat-message-display(ng-repeat="message in messages" chat-message="message")
+      .flexbox-item.footer
+        chat-message-editor

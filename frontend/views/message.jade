@@ -1,7 +1,10 @@
-.col-xs-12.media.message
-  .media-left
-    chat-message-avatar(chat-message="chatMessage")
-  .media-body
-    h4.media-heading {{::chatMessage.author}}
-    small {{::chatMessage.published}}
-    p {{::chatMessage.message | autolink}}
+.row.msg-container.base-sent
+  .row.messages.msg-sent
+    .row.nopadding
+      .col-md-10.col-xs-10.nopadding
+        p {{::chatMessage.message}}
+      .col-md-2.col-xs-2.nopadding.avatar
+        chat-message-avatar(chat-message="chatMessage")
+    .row.nopadding
+      time(datetime="{{::chatMessage.published}}") {{::chatMessage.author}}
+
