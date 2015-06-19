@@ -12,10 +12,11 @@ describe('Directives', function() {
   });
 
   describe('The chatMessageBubble directive', function() {
-    var $rootScope, $compile, $popover, ChatMessage, called, config, $timeout;
+    var scope, $rootScope, $compile, $popover, ChatMessage, called, config, $timeout, chat, chatCalled;
 
     beforeEach(function() {
       called = 0;
+      chatCalled = 0;
       config = {};
     });
 
@@ -29,6 +30,12 @@ describe('Directives', function() {
         };
       };
       $provide.value('$popover', $popover);
+      chat = {
+        toggleWindow: function() {
+          chatCalled++;
+        }
+      };
+      $provide.value('chat', chat);
     }));
 
     beforeEach(inject(function(_$compile_, _$rootScope_, _ChatMessage_, _$timeout_) {
@@ -39,7 +46,7 @@ describe('Directives', function() {
     }));
 
     beforeEach(function() {
-      var scope = $rootScope.$new();
+      scope = $rootScope.$new();
       scope.attendee = {
         easyrtcid: '54321'
       };
@@ -57,8 +64,9 @@ describe('Directives', function() {
         delay: { show: 100, hide: 200 },
         content: 'a new message',
         container: 'body',
-        contentTemplate: '/chat/views/bubble.html',
-        animation: 'am-flip-x'
+        template: '/chat/views/bubble.html',
+        animation: 'am-flip-x',
+        scope: scope
       });
       $timeout.flush();
       expect(called).to.equal(2);
@@ -94,13 +102,29 @@ describe('Directives', function() {
         delay: { show: 100, hide: 200 },
         content: 'a new message',
         container: 'body',
-        contentTemplate: '/chat/views/bubble.html',
-        animation: 'am-flip-x'
+        template: '/chat/views/bubble.html',
+        animation: 'am-flip-x',
+        scope: scope
       });
       $timeout.flush();
       expect(called).to.equal(2);
     });
 
+    it('should open the chatBox if it is not displayed', function() {
+      scope.openChatBox();
+      $rootScope.$digest();
+      expect(chatCalled).to.equal(1);
+    });
+
+    it('should not toggle the chatBox if it is already displayed', function() {
+      $rootScope.$broadcast('chat:window:visibility', { visible: true });
+      $rootScope.$digest();
+
+      scope.openChatBox();
+      $rootScope.$digest();
+
+      expect(chatCalled).to.equal(0);
+    });
   });
 
   describe('the chatMessageEditor directive', function() {
