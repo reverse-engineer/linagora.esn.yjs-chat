@@ -378,4 +378,67 @@ describe('Directives', function() {
       this.chatWindow.find('.close').click();
     });
   });
+
+  describe('the chatMessageDisplay directive', function() {
+
+    beforeEach(function() {
+      this.currentConferenceState = {};
+      var self = this;
+
+      angular.mock.module(function($provide) {
+        $provide.value('currentConferenceState', self.currentConferenceState);
+        $provide.value('chatMessageAvatarDirective', function() {});
+      });
+    });
+
+    beforeEach(inject(function($rootScope, $compile) {
+      this.$scope = $rootScope.$new();
+      this.$rootScope = $rootScope;
+      this.$compile = $compile;
+
+      this.initDirective = function(scope) {
+        var html = '<chat-message-display chat-message="message"/>';
+        var element = this.$compile(html)(scope);
+        scope.$digest();
+        return element;
+      };
+    }));
+
+    it('should set the author value to his display name', function() {
+      this.$scope.message = {author: 123};
+      var attendee = {
+        displayName: 'Foo Bar'
+      };
+      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        return attendee;
+      };
+      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.author).to.equal(attendee.displayName);
+    });
+
+    it('should set the author value to his message.author when attendee display name is undefined', function() {
+      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        return {};
+      };
+      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.author).to.equal('12345');
+    });
+
+    it('should set the author value to his message.author when attendee is undefined', function() {
+      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        return;
+      };
+      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
+      var element = this.initDirective(this.$scope);
+      this.$scope.$digest();
+      var iscope = element.isolateScope();
+      expect(iscope.author).to.equal('12345');
+    });
+  });
 });
