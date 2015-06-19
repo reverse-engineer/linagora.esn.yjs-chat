@@ -38,11 +38,30 @@ angular.module('esn.chat')
 
       yjsService().connector.whenSynced(function() {
         var ylist = y.val(id);
+        var onChangeObserver = onChange(jsArray);
+
+        y.observe(function(events) {
+
+          events.filter(function(event) {
+            return event.name === 'chat:messages';
+          }).forEach(function() {
+            var newYList = y.val('chat:messages');
+
+            if (ylist !== newYList) {
+              ylist = newYList;
+              ylist.observe(onChangeObserver);
+              callback(ylist);
+            }
+
+          });
+        });
+
         if (!ylist) {
           ylist = new $window.Y.List(jsArray);
           y.val(id, ylist);
         }
-        ylist.observe(onChange(jsArray));
+
+        ylist.observe(onChangeObserver);
         callback(ylist);
       });
     }

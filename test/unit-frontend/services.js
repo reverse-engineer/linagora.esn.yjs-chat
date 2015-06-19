@@ -103,6 +103,12 @@ describe('The Services', function() {
           whenSynced: function(callback) {
             callback();
           }
+        },
+        y: {
+          val: function() {
+            return ylist;
+          },
+          observe: function() {}
         }
       };
       var yService = function() {
@@ -124,17 +130,15 @@ describe('The Services', function() {
       });
 
       ylist = {
-        observe: function() {
-        }
+        observe: function() {},
+        val: function() {}
       };
 
     });
 
     it('should call the callback when yjs isSynced is called', function() {
-      this.yServiceData.y = {
-        val: function() {
-          return ylist;
-        }
+      this.yServiceData.y.val = function() {
+        return ylist;
       };
 
       var spy = chai.spy();
@@ -145,10 +149,8 @@ describe('The Services', function() {
     it('should create a new YList when the val does not exist', function(done) {
       var myTab = [];
 
-      this.yServiceData.y = {
-        val: function() {
-          return undefined;
-        }
+      this.yServiceData.y.val = function() {
+        return undefined;
       };
 
       this.$window.Y.List = function(t) {
@@ -163,10 +165,8 @@ describe('The Services', function() {
     it('should not create a new YList when the val exists', function(done) {
       var myTab = [];
 
-      this.yServiceData.y = {
-        val: function() {
-          return ylist;
-        }
+      this.yServiceData.y.val = function() {
+        return ylist;
       };
 
       this.$window.Y.List = function(t) {
@@ -346,6 +346,9 @@ describe('The Services', function() {
             callback({
               observe: function(callback) {
                 self.handler = callback;
+              },
+              val: function() {
+                return yList;
               }
             });
           };
