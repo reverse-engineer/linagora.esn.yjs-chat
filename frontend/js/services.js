@@ -46,7 +46,6 @@ angular.module('esn.chat')
             return event.name === 'chat:messages';
           }).forEach(function() {
             var newYList = y.val('chat:messages');
-
             if (ylist !== newYList) {
               ylist = newYList;
               ylist.observe(onChangeObserver);

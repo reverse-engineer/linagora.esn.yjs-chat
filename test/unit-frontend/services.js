@@ -180,6 +180,76 @@ describe('The Services', function() {
       });
     });
 
+    describe('observe chat:messages object', function() {
+      var myTab = [],
+        callback,
+        mySpy;
+
+      beforeEach(function() {
+        this.yServiceData.y = {
+          val: function () {
+            return ylist;
+          },
+          observe: chai.spy(function(cb) {
+            callback = cb;
+          })
+        };
+        ylist.observe = chai.spy();
+        this.$window.Y.List = function(t) {
+          return ylist;
+        };
+
+        mySpy = chai.spy();
+
+      });
+
+      it('shouldn\'t do anything of the y.val() hasn\'t changed', function() {
+        var events = [{
+          name: 'chat:messages'
+        }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        expect(ylist.observe).to.have.been.called.once;
+        callback(events);
+        expect(ylist.observe).to.have.been.called.once;
+
+        expect(this.yServiceData.y.observe).to.have.been.called.once;
+      });
+
+      it('should reattach the callbacks when y.val() has changed', function() {
+        var newYList = {
+            observe: chai.spy(),
+            foo: 'bar'
+          },
+          events = [{
+            name: 'chat:messages'
+          }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        this.yServiceData.y.val = function() {
+          return newYList;
+        };
+
+
+        callback(events);
+        expect(newYList.observe).to.have.been.called.once;
+      });
+
+      it('shouldn\'t reattach the callbacks when other yjs variables are changed', function() {
+        var events = [{
+          name: 'this is another shared variable'
+        }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        callback(events);
+        expect(mySpy).to.have.been.called.once;
+      });
+
+    });
+
   });
 
   describe('the chat factory', function() {
