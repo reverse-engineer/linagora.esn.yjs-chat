@@ -103,6 +103,12 @@ describe('The Services', function() {
           whenSynced: function(callback) {
             callback();
           }
+        },
+        y: {
+          val: function() {
+            return ylist;
+          },
+          observe: function() {}
         }
       };
       var yService = function() {
@@ -124,17 +130,15 @@ describe('The Services', function() {
       });
 
       ylist = {
-        observe: function() {
-        }
+        observe: function() {},
+        val: function() {}
       };
 
     });
 
     it('should call the callback when yjs isSynced is called', function() {
-      this.yServiceData.y = {
-        val: function() {
-          return ylist;
-        }
+      this.yServiceData.y.val = function() {
+        return ylist;
       };
 
       var spy = chai.spy();
@@ -145,10 +149,8 @@ describe('The Services', function() {
     it('should create a new YList when the val does not exist', function(done) {
       var myTab = [];
 
-      this.yServiceData.y = {
-        val: function() {
-          return undefined;
-        }
+      this.yServiceData.y.val = function() {
+        return undefined;
       };
 
       this.$window.Y.List = function(t) {
@@ -163,10 +165,8 @@ describe('The Services', function() {
     it('should not create a new YList when the val exists', function(done) {
       var myTab = [];
 
-      this.yServiceData.y = {
-        val: function() {
-          return ylist;
-        }
+      this.yServiceData.y.val = function() {
+        return ylist;
       };
 
       this.$window.Y.List = function(t) {
@@ -178,6 +178,76 @@ describe('The Services', function() {
       this.yArraySynchronizer('test', myTab, function() {
         done();
       });
+    });
+
+    describe('observe chat:messages object', function() {
+      var myTab = [],
+        callback,
+        mySpy;
+
+      beforeEach(function() {
+        this.yServiceData.y = {
+          val: function () {
+            return ylist;
+          },
+          observe: chai.spy(function(cb) {
+            callback = cb;
+          })
+        };
+        ylist.observe = chai.spy();
+        this.$window.Y.List = function(t) {
+          return ylist;
+        };
+
+        mySpy = chai.spy();
+
+      });
+
+      it('shouldn\'t do anything of the y.val() hasn\'t changed', function() {
+        var events = [{
+          name: 'chat:messages'
+        }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        expect(ylist.observe).to.have.been.called.once;
+        callback(events);
+        expect(ylist.observe).to.have.been.called.once;
+
+        expect(this.yServiceData.y.observe).to.have.been.called.once;
+      });
+
+      it('should reattach the callbacks when y.val() has changed', function() {
+        var newYList = {
+            observe: chai.spy(),
+            foo: 'bar'
+          },
+          events = [{
+            name: 'chat:messages'
+          }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        this.yServiceData.y.val = function() {
+          return newYList;
+        };
+
+
+        callback(events);
+        expect(newYList.observe).to.have.been.called.once;
+      });
+
+      it('shouldn\'t reattach the callbacks when other yjs variables are changed', function() {
+        var events = [{
+          name: 'this is another shared variable'
+        }];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        callback(events);
+        expect(mySpy).to.have.been.called.once;
+      });
+
     });
 
   });
@@ -346,6 +416,9 @@ describe('The Services', function() {
             callback({
               observe: function(callback) {
                 self.handler = callback;
+              },
+              val: function() {
+                return yList;
               }
             });
           };
