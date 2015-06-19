@@ -55,7 +55,8 @@ angular.module('esn.chat')
         if (!chatMessage) {
           throw new Error('No message provided');
         }
-        ret.yMessages.push(chatMessage);
+
+        (ret.yMessages || ret.messages).push(chatMessage);
         $rootScope.$broadcast('chat:message:sent', chatMessage);
       }
 

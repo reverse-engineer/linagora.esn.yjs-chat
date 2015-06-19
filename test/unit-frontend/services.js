@@ -267,6 +267,21 @@ describe('The Services', function() {
       });
     });
 
+    describe('the sendMessage method', function() {
+
+      it('should push the message in the native messages array if the ylist is not initialized', function() {
+        this.yArraySynchronizerMock = function() {};
+
+        inject(function(chat) {
+          chatFactory = chat;
+        });
+
+        chatFactory.sendMessage(message);
+        expect(chatFactory.messages).to.have.length(1);
+      });
+
+    });
+
     describe('the toggleWindow method', function() {
       var self = this;
       beforeEach(function() {
