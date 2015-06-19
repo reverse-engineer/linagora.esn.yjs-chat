@@ -412,6 +412,7 @@ describe('Directives', function() {
       angular.mock.module(function($provide) {
         $provide.value('currentConferenceState', self.currentConferenceState);
         $provide.value('chatMessageAvatarDirective', function() {});
+        $provide.value('amDateFormatFilter', function() {});
       });
     });
 
