@@ -129,10 +129,13 @@ angular.module('esn.chat')
             return callback(null, DEFAULT_AVATAR);
           }
 
-          var canvas = newCanvas(CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
-          var context = canvas.getContext('2d');
+          var canvas = newCanvas(CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE),
+              context = canvas.getContext('2d');
+
           context.fillStyle = attendeeColorsService.getColorForAttendeeAtIndex(attendee.index);
+          context.fillRect(0, 0, CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
           drawHelper.drawImage(context, image, 0, 0, CHAT_AVATAR_SIZE, CHAT_AVATAR_SIZE);
+
           return callback(null, canvas.toDataURL());
         });
       }
