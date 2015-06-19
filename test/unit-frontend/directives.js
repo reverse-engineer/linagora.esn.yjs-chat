@@ -391,6 +391,10 @@ describe('Directives', function() {
       });
     });
 
+    beforeEach(module(function($sceProvider) {
+      $sceProvider.enabled(false);
+    }));
+
     beforeEach(inject(function($rootScope, $compile) {
       this.$scope = $rootScope.$new();
       this.$rootScope = $rootScope;
