@@ -157,9 +157,18 @@ describe('Directives', function() {
 
     beforeEach(inject(function ($rootScope, $compile) {
       this.scope = $rootScope.$new();
-      $compile('<chat-message-editor></chat-message-editor>')(this.scope);
+      this.$rootScope = $rootScope;
+      this.element = $compile('<chat-message-editor></chat-message-editor>')(this.scope);
+
       $rootScope.$digest();
     }));
+
+    it('should focus the input when the chat window is opened', function() {
+      this.element.appendTo(document.body);
+      this.$rootScope.$broadcast('chat:window:visibility', { visible: true });
+
+      expect(this.element.find('.chat_input')[0]).to.equal(document.activeElement);
+    });
 
     describe('the createMessage function', function () {
       it('should create and send a message from ', function () {
@@ -176,6 +185,7 @@ describe('Directives', function() {
         expect(this.scope.messageContent).to.equal('');
       });
     });
+
   });
 
   describe('The chatMessageAvatar directive', function() {
