@@ -504,4 +504,63 @@ describe('Directives', function() {
     });
 
   });
+
+  describe('the chatAutoScroll directive', function() {
+    beforeEach(inject(function($rootScope, $compile) {
+      this.$scope = $rootScope.$new();
+      this.$rootScope = $rootScope;
+      this.$compile = $compile;
+      this.messageHTML = '<div style="height: 100px">x</div>';
+
+      this.initDirective = function(scope) {
+        var html = '<div chat-auto-scroll style="height: 150px; overflow: scroll;">';
+        var element = this.$compile(html)(scope);
+        $('body').append(element); // give dimensions to element
+        scope.$digest();
+        return element;
+      };
+
+      this.getScrollPosition = function(element) {
+        if (element.scrollTop() === 0) {
+          return 'top';
+        } else if (element.prop('scrollHeight') - element.height() - element.prop('scrollTop') <= 1) {
+          return 'bottom';
+        } else {
+          return 'middle';
+        }
+      };
+    }));
+
+    it('should autoScroll', function() {
+      this.$scope.messages = [];
+      var element = this.initDirective(this.$scope);
+      this.$rootScope.$apply();
+      this.$scope.messages = [1];
+      element.append($(this.messageHTML));
+      element.append($(this.messageHTML));
+      this.$rootScope.$apply();
+      expect(this.getScrollPosition(element)).to.equal('bottom');
+    });
+
+    it('should not autoScroll when user scrolled up', function() {
+      this.$scope.messages = [];
+      var element = this.initDirective(this.$scope);
+      this.$rootScope.$apply();
+      this.$scope.messages = [1];
+      element.append($(this.messageHTML));
+      element.append($(this.messageHTML));
+      this.$rootScope.$apply();
+      element.scrollTop(10);
+      // unfortunately, should send scroll evt manually...
+      element.trigger('scroll');
+      this.$rootScope.$apply();
+      this.$scope.messages.push(2);
+      element.append($(this.messageHTML));
+      this.$rootScope.$apply();
+      expect(this.getScrollPosition(element)).to.equal('middle');
+    });
+
+
+  });
+
 });

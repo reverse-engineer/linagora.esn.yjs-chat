@@ -145,4 +145,40 @@ angular.module('esn.chat')
       templateUrl: '/chat/views/chat.html',
       link: link
     };
+  })
+  .directive('chatAutoScroll', function() {
+
+    var offByOneError = 1;
+
+    function getScrollDistanceFromBottom(element) {
+      return element.prop('scrollHeight') - element.height() - element.scrollTop();
+    }
+
+    function shouldSuspendAutoScroll(element) {
+      return getScrollDistanceFromBottom(element) <= offByOneError ? false : true;
+    }
+
+    function scrollToBottom(element) {
+      element.scrollTop(element.prop('scrollHeight'));
+    }
+
+    function link(scope, element) {
+      var suspended = false;
+      element.on('scroll', function() {
+        suspended = shouldSuspendAutoScroll(element);
+      });
+
+      scope.$watch('messages.length', function() {
+        if (!suspended) {
+          scope.$evalAsync(function() {
+            scrollToBottom(element);
+          });
+        }
+      });
+    }
+
+    return {
+      restrict: 'A',
+      link: link
+    };
   });

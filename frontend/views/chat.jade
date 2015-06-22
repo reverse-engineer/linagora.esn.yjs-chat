@@ -10,7 +10,7 @@
             button.close(type="button", ng-click='close()') &times;
 
       .flexbox-item.fill-area.content.flexbox-item-grow
-        .fill-area-content.flexbox-item-grow
+        .fill-area-content.flexbox-item-grow(chat-auto-scroll)
           .msg-container-base
             chat-message-display(ng-repeat="message in messages" chat-message="message")
       .flexbox-item.footer
