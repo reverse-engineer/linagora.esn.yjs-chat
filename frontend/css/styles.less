@@ -5,14 +5,17 @@
 
 @chat-main-background: rgba(27, 27, 27, 0.6);
 @chat-header-background: rgb(51, 109, 190, .6);
+@chat-transition-speed: 0.2s;
 
 .chat-window-wrapper {
-  display: none;
+  display: block;
   position: absolute;
   bottom: @user-control-bar-height;
-  right: 2px;
+  right: 0px;
   z-index: 5;
-
+  transition: opacity @chat-transition-speed ease-in;
+  pointer-events: none;
+  opacity: 0;
   width: @chat-window-width;
   height: @chat-window-height;
 
@@ -21,8 +24,19 @@
       bottom: 0;
   }
 
-  &.visible {
+  chat-message-display {
     display: block;
+    transition: transform @chat-transition-speed ease-in;
+    transform: translate3d(300px, 0, 0);
+  }
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+
+    chat-message-display {
+      transform: translate3d(0, 0, 0);
+    }
   }
 }
 
