@@ -12,6 +12,8 @@ describe('The Services', function() {
         getContext: function() {
           return {
             drawImage: function() {
+            },
+            fillRect: function() {
             }
           }
         },
