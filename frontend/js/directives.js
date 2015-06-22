@@ -73,7 +73,7 @@ angular.module('esn.chat')
       };
     }])
 
-    .directive('chatMessageDisplay', ['currentConferenceState', function(currentConferenceState) {
+    .directive('chatMessageDisplay', ['currentConferenceState', 'easyRTCService', function(currentConferenceState, easyRTCService) {
 
       return {
         restrict: 'E',
@@ -84,7 +84,9 @@ angular.module('esn.chat')
 
         link: function($scope) {
           var author = currentConferenceState.getAttendeeByEasyrtcid($scope.chatMessage.author);
+
           $scope.author = author && author.displayName ? author.displayName : $scope.chatMessage.author;
+          $scope.myself = easyRTCService.myEasyrtcid() === $scope.chatMessage.author;
         }
       };
     }])
