@@ -43,7 +43,7 @@ angular.module('esn.chat')
 
   .directive('chatMessageEditor', ['ChatMessage', 'chat', 'easyRTCService', 'localCameraScreenshot', 'CHAT_AVATAR_SIZE',
     function(ChatMessage, chat, easyRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE) {
-      function link(scope) {
+      function link(scope, element) {
         scope.messageContent = '';
 
         scope.createMessage = function() {
@@ -58,6 +58,12 @@ angular.module('esn.chat')
           chat.sendMessage(new ChatMessage(chatMsgData));
           scope.messageContent = '';
         };
+
+        scope.$on('chat:window:visibility', function(event, data) {
+          if (data.visible) {
+            element.find('.chat_input').focus();
+          }
+        });
       }
 
       return {
