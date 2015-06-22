@@ -2,7 +2,7 @@ form
   .input-group
     input.form-control.input-sm.chat_input(id="btn-input" type="text" placeholder="Write your message here..." ng-model='messageContent')
     span.input-group-btn
-      button.btn.btn-primary.btn-sm.send-button(id="btn-chat" ng-click='createMessage()', type='submit')
+      button.btn.btn-primary.btn-sm.send-button(id="btn-chat", ng-click='createMessage()', type='submit', ng-disabled="!messageContent")
         svg.svg-button(viewBox='0 0 24 24')
           path(fill='#ffffff', d='M2,21L23,12L2,3V10L17,12L2,14V21Z')
 
