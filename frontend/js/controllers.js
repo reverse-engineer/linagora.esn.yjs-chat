@@ -7,4 +7,9 @@ angular.module('esn.chat')
     $scope.close = function() {
       chat.toggleWindow();
     };
+
+    $scope.$on('chat:message:received', function() {
+      $scope.$applyAsync();
+    });
+
   });
