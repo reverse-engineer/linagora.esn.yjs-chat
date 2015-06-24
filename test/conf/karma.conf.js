@@ -8,6 +8,7 @@ module.exports = function(config) {
       'test/conf/phantom-bind-polyfill.js',
       'frontend/components/jquery/dist/jquery.js',
       'frontend/components/angular/angular.js',
+      'frontend/components/angular-animate/angular-animate.js',
       'frontend/components/angular-mocks/angular-mocks.js',
       'frontend/components/chai/chai.js',
       'frontend/components/chai-spies/chai-spies.js',
