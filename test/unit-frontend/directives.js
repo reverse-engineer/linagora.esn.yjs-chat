@@ -170,6 +170,26 @@ describe('Directives', function() {
       expect(this.element.find('.chat_input')[0]).to.equal(document.activeElement);
     });
 
+    it('should disable the send button by default when the chat window is opened', function() {
+      this.$rootScope.$broadcast('chat:window:visibility', { visible: true });
+
+      expect(this.element.find('.send-button').prop('disabled')).to.be.true;
+    });
+
+    it('should enable the send button when some text is entered in the input', function() {
+      this.scope.messageContent = 'some text';
+      this.scope.$digest();
+
+      expect(this.element.find('.send-button').prop('disabled')).to.be.false;
+    });
+
+    it('should disable the send button when the input is cleared', function() {
+      this.scope.messageContent = '';
+      this.scope.$digest();
+
+      expect(this.element.find('.send-button').prop('disabled')).to.be.true;
+    });
+
     describe('the createMessage function', function () {
       it('should create and send a message from ', function () {
         var msgContent = 'content';
