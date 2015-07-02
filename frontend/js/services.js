@@ -8,6 +8,7 @@ angular.module('esn.chat')
       this.authorAvatar = object.authorAvatar;
       this.published = object.published;
       this.message = object.message;
+      this.displayName = object.displayName;
     }
 
     return ChatMessage;

@@ -560,8 +560,8 @@ describe('The Services', function() {
 
     it('should add messages to the messages array', function() {
       var yMessages = [
-        {author: 'u1', authorAvatar: 'a1', published: 1, message: 'm1'},
-        {author: 'u2', authorAvatar: 'a2', published: 2, message: 'm2'}
+        {author: 'u1', authorAvatar: 'a1', published: 1, message: 'm1', displayName: 'author1'},
+        {author: 'u2', authorAvatar: 'a2', published: 2, message: 'm2', displayName: 'author2'}
       ];
       var messages = [];
       var ylist = {

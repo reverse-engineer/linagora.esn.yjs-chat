@@ -148,10 +148,16 @@ describe('Directives', function() {
         }
       };
 
+      var self = this;
+
+      this.currentConferenceState = {
+      };
+
       angular.mock.module(function ($provide) {
         $provide.value('easyRTCService', easyRTCService);
         $provide.value('chat', chatMock);
         $provide.value('localCameraScreenshot', localCameraScreenshotMock);
+        $provide.value('currentConferenceState', self.currentConferenceState);
       });
     });
 
@@ -190,8 +196,14 @@ describe('Directives', function() {
       expect(this.element.find('.send-button').prop('disabled')).to.be.true;
     });
 
-    describe('the createMessage function', function () {
-      it('should create and send a message from ', function () {
+    describe('the createMessage function', function() {
+      it('should create and send a message from ', function() {
+        var msgDisplayName = 'user1';
+        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+          return {
+            displayName: msgDisplayName
+          };
+        };
         var msgContent = 'content';
         this.scope.messageContent = msgContent;
 
@@ -199,6 +211,7 @@ describe('Directives', function() {
           expect(msg.author).to.equal(easyrtcid);
           expect(msg.authorAvatar).to.deep.equal(avatar.src);
           expect(msg.message).to.equal(msgContent);
+          expect(msg.displayName).to.equal(msgDisplayName);
         };
 
         this.scope.createMessage();
@@ -470,40 +483,6 @@ describe('Directives', function() {
         return element;
       };
     }));
-
-    it('should set the author value to his display name', function() {
-      this.$scope.message = {author: 123};
-      var attendee = {
-        displayName: 'Foo Bar'
-      };
-      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
-        return attendee;
-      };
-      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
-      var element = this.initDirective(this.$scope);
-      this.$scope.$digest();
-      var iscope = element.isolateScope();
-      expect(iscope.author).to.equal(attendee.displayName);
-    });
-
-    it('should set the author value to his message.author when attendee display name is undefined', function() {
-      this.currentConferenceState.getAttendeeByEasyrtcid = function() {
-        return {};
-      };
-      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
-      var element = this.initDirective(this.$scope);
-      this.$scope.$digest();
-      var iscope = element.isolateScope();
-      expect(iscope.author).to.equal('12345');
-    });
-
-    it('should set the author value to his message.author when attendee is undefined', function() {
-      this.$scope.message = {author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' };
-      var element = this.initDirective(this.$scope);
-      this.$scope.$digest();
-      var iscope = element.isolateScope();
-      expect(iscope.author).to.equal('12345');
-    });
 
     it('should set $scope.myself to true when message is sent by the local user', function() {
       this.$scope.message = { author: 'myself' };
