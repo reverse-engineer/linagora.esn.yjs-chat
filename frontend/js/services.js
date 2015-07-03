@@ -8,6 +8,7 @@ angular.module('esn.chat')
       this.authorAvatar = object.authorAvatar;
       this.published = object.published;
       this.message = object.message;
+      this.displayName = object.displayName;
     }
 
     return ChatMessage;
@@ -66,8 +67,16 @@ angular.module('esn.chat')
     }
     return mapToYList;
   }])
-  .factory('chat', ['$rootScope', 'yjsService', 'yArraySynchronizer',
-    function($rootScope, yjsService, yArraySynchronizer) {
+  .factory('yListToMessages', ['ChatMessage', function(ChatMessage) {
+    return function yListToMessages(ylist, messages) {
+      var ymsgs = ylist.val();
+      ymsgs.forEach(function(msg) {
+        messages.push(new ChatMessage(msg));
+      });
+    };
+  }])
+  .factory('chat', ['$rootScope', 'yjsService', 'yArraySynchronizer', 'yListToMessages',
+    function($rootScope, yjsService, yArraySynchronizer, yListToMessages) {
 
       function sendMessage(chatMessage) {
         if (!chatMessage) {
@@ -95,6 +104,8 @@ angular.module('esn.chat')
 
       var callback = function(yList) {
         ret.yMessages = yList;
+        yListToMessages(ret.yMessages, ret.messages);
+        $rootScope.$applyAsync();
 
         ret.yMessages.observe(function(events) {
           events.forEach(function(event) {

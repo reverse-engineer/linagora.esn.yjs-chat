@@ -284,11 +284,20 @@ describe('The Services', function() {
         return self.yArraySynchronizerMock(channel, messages, callback);
       };
 
+      this.yListToMessagesMock = function() {
+      };
+
+      var yListToMessages = function(ylist, messages) {
+        return self.yListToMessagesMock(ylist, messages);
+      };
+
+
       message = {foo: 'bar'};
 
       module(function($provide) {
         $provide.value('yArraySynchronizer', yArraySynchronizer);
         $provide.value('yjsService', yService);
+        $provide.value('yListToMessages', yListToMessages);
       });
 
       inject(function(_$rootScope_) {
@@ -410,6 +419,42 @@ describe('The Services', function() {
           chatFactory = chat;
         });
       });
+      describe('yArraySynchronizer callback', function() {
+        beforeEach(function() {
+          var self = this;
+          this.yArraySynchronizerMock = function(channel, messages, callback) {
+            self.callback = callback;
+          };
+          inject(function(chat) {
+            chatFactory = chat;
+          });
+        });
+
+        it('should expose the ylist', function() {
+          var ylist = {
+            observe: function() {}
+          };
+          this.callback(ylist);
+          expect(chatFactory.yMessages).to.equal(ylist);
+        });
+        it('should call the yListToMessages service', function() {
+          var ylist = {
+            observe: function() {}
+          };
+          this.yListToMessagesMock = function(ylist, messages) {
+            messages.push('hello');
+          };
+          this.callback(ylist);
+          expect(chatFactory.messages).to.deep.equal(['hello']);
+        });
+        it('should call $rootScope.$applyAsync', function(done) {
+          var ylist = {
+            observe: function() {}
+          };
+          $rootScope.$applyAsync = done;
+          this.callback(ylist);
+        });
+      });
 
       describe('yjs events handler', function() {
         beforeEach(function() {
@@ -500,5 +545,48 @@ describe('The Services', function() {
       });
     });
 
+  });
+
+  describe('the yListToMessages factory', function() {
+    var yListToMessages;
+    beforeEach(module('esn.chat'));
+    beforeEach(inject(function(_yListToMessages_) {
+      yListToMessages = _yListToMessages_;
+    }));
+
+    it('should be a function', function() {
+      expect(yListToMessages).to.be.a('function');
+    });
+
+    it('should add messages to the messages array', function() {
+      var yMessages = [
+        {author: 'u1', authorAvatar: 'a1', published: 1, message: 'm1', displayName: 'author1'},
+        {author: 'u2', authorAvatar: 'a2', published: 2, message: 'm2', displayName: 'author2'}
+      ];
+      var messages = [];
+      var ylist = {
+        val: function() {
+          return yMessages;
+        }
+      };
+      yListToMessages(ylist, messages);
+      expect(messages).to.deep.equal(yMessages);
+    });
+    it('should remove angularish variables', function() {
+      var yMessages = [
+        {author: 'u1', authorAvatar: 'a1', published: 1, message: 'm1', $$id: 'v7'},
+        {author: 'u2', authorAvatar: 'a2', published: 2, message: 'm2', $$id: 'v8'}
+      ];
+      var messages = [];
+      var ylist = {
+        val: function() {
+          return yMessages;
+        }
+      };
+      yListToMessages(ylist, messages);
+      expect(messages).to.have.length(2);
+      expect(messages[0]).to.not.have.property('$$id');
+      expect(messages[1]).to.not.have.property('$$id');
+    });
   });
 });

@@ -3,7 +3,7 @@
     .row.nopadding
       chat-message-avatar(chat-message="chatMessage")
       p
-        span.author {{::author}}
+        span.author {{::chatMessage.displayName}}
         span.divider -
         span.published.small {{::chatMessage.published | amDateFormat:'h:mm a'}}
         span.divider :
