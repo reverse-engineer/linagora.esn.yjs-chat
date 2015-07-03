@@ -1,5 +1,6 @@
 'use strict';
 
+/* global chai: false */
 var expect = chai.expect;
 
 describe('The Services', function() {
@@ -15,7 +16,7 @@ describe('The Services', function() {
             },
             fillRect: function() {
             }
-          }
+          };
         },
         toBlob: function() {
         }
@@ -189,7 +190,7 @@ describe('The Services', function() {
 
       beforeEach(function() {
         this.yServiceData.y = {
-          val: function () {
+          val: function() {
             return ylist;
           },
           observe: chai.spy(function(cb) {
@@ -364,7 +365,6 @@ describe('The Services', function() {
     });
 
     describe('the toggleWindow method', function() {
-      var self = this;
       beforeEach(function() {
         inject(function(chat) {
           chatFactory = chat;

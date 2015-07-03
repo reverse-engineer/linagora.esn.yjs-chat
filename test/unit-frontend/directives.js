@@ -25,7 +25,7 @@ describe('Directives', function() {
         return {
           toggle: function() {
             called++;
-            config = popoverConfiguration
+            config = popoverConfiguration;
           }
         };
       };
@@ -135,15 +135,15 @@ describe('Directives', function() {
       src: 'avatarSrc'
     };
 
-    beforeEach(function () {
+    beforeEach(function() {
       var easyRTCService = {
-        myEasyrtcid: function () {
+        myEasyrtcid: function() {
           return easyrtcid;
         }
       };
 
       var localCameraScreenshotMock = {
-        shoot: function () {
+        shoot: function() {
           return avatar;
         }
       };
@@ -153,7 +153,7 @@ describe('Directives', function() {
       this.currentConferenceState = {
       };
 
-      angular.mock.module(function ($provide) {
+      angular.mock.module(function($provide) {
         $provide.value('easyRTCService', easyRTCService);
         $provide.value('chat', chatMock);
         $provide.value('localCameraScreenshot', localCameraScreenshotMock);
@@ -161,7 +161,7 @@ describe('Directives', function() {
       });
     });
 
-    beforeEach(inject(function ($rootScope, $compile) {
+    beforeEach(inject(function($rootScope, $compile) {
       this.scope = $rootScope.$new();
       this.$rootScope = $rootScope;
       this.element = $compile('<chat-message-editor></chat-message-editor>')(this.scope);
@@ -207,7 +207,7 @@ describe('Directives', function() {
         var msgContent = 'content';
         this.scope.messageContent = msgContent;
 
-        chatMock.sendMessage = function (msg) {
+        chatMock.sendMessage = function(msg) {
           expect(msg.author).to.equal(easyrtcid);
           expect(msg.authorAvatar).to.deep.equal(avatar.src);
           expect(msg.message).to.equal(msgContent);
@@ -355,23 +355,23 @@ describe('Directives', function() {
       rootScope.$digest();
     });
 
-    it('Should display number of messages unread when there are some', function(){
-      chat.unread=5;
-      chat.opened=false;
+    it('Should display number of messages unread when there are some', function() {
+      chat.unread = 5;
+      chat.opened = false;
       rootScope.$digest();
       expect(element.find('.badge').hasClass('ng-hide')).to.be.false;
     });
 
-    it('Should not display number of messages unread when there are none', function(){
-      chat.unread=0;
-      chat.opened=false;
+    it('Should not display number of messages unread when there are none', function() {
+      chat.unread = 0;
+      chat.opened = false;
       rootScope.$digest();
       expect(element.find('.badge').hasClass('ng-hide')).to.be.true;
     });
 
-    it('Should not display number of messages unread when the panel is opened', function(){
-      chat.unread=56;
-      chat.opened=true;
+    it('Should not display number of messages unread when the panel is opened', function() {
+      chat.unread = 56;
+      chat.opened = true;
       rootScope.$digest();
       expect(element.find('.badge').hasClass('ng-hide')).to.be.true;
     });
