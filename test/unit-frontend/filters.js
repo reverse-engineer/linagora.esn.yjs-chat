@@ -1,5 +1,6 @@
 'use strict';
 
+/* global chai: false */
 var expect = chai.expect;
 
 describe('The filters', function() {
@@ -16,7 +17,7 @@ describe('The filters', function() {
 
     it('should replace google.fr URL', function() {
       expect(filter('go to google.fr')).to.match(/<a href="http:\/\/google\.fr"/);
-    })
+    });
 
   });
 
@@ -26,11 +27,11 @@ describe('The filters', function() {
     }]));
 
     it('should show numbers under max normally', function() {
-      expect(filter(10, 10)).to.equal(10)
+      expect(filter(10, 10)).to.equal(10);
     });
 
     it('should show numbers over max with a plus', function() {
-      expect(filter(10, 9)).to.equal('9+')
+      expect(filter(10, 9)).to.equal('9+');
     });
   });
 });
