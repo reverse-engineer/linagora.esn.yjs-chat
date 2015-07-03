@@ -5,7 +5,10 @@
 
 @chat-main-background: rgba(27, 27, 27, 0.6);
 @chat-header-background: rgb(51, 109, 190, .6);
+@message-background: rgb(255, 255, 255);
+@new-message-background: rgb(223, 235, 251);
 @chat-transition-speed: 0.2s;
+@new-message-animation-length: 4s;
 
 .chat-window-wrapper {
   display: block;
@@ -134,7 +137,7 @@
   }
 
   .messages {
-    background: white;
+    background: @message-background;
     padding: 10px;
     border-radius: 2px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -214,6 +217,15 @@
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #555;
   }
+
+  chat-message-display.ng-enter {
+    animation: enter_sequence @new-message-animation-length linear;
+    transform-origin: bottom;
+  }
+
+  chat-message-display.ng-enter .messages{
+    animation: enter_sequence_message @new-message-animation-length linear;
+  }
 }
 
 .popover-cursor {
@@ -232,4 +244,16 @@
       color: white;
     }
   }
+}
+
+@keyframes enter_sequence {
+  0% { transform: scale(0); }
+  2% { transform: scale(1); }
+  100% { transform: scale(1);}
+}
+
+@keyframes enter_sequence_message {
+  0% { background-color: @new-message-background;}
+  90% { background-color: @new-message-background;}
+  100% { background-color: @message-background; }
 }
