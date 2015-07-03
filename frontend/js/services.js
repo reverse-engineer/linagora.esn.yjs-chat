@@ -104,6 +104,9 @@ angular.module('esn.chat')
 
       var callback = function(yList) {
         ret.yMessages = yList;
+        // yJS will send us back the messages we sent before being connected to peers
+        // that's why we flush messages
+        ret.messages.splice(0, ret.messages.length);
         yListToMessages(ret.yMessages, ret.messages);
         $rootScope.$applyAsync();
 

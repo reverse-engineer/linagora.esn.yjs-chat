@@ -454,6 +454,17 @@ describe('The Services', function() {
           $rootScope.$applyAsync = done;
           this.callback(ylist);
         });
+        it('should flush the messages array', function() {
+          var messages = chatFactory.messages;
+          messages.push(1);
+          messages.push(2);
+          messages.push(3);
+          var ylist = {
+            observe: function() {}
+          };
+          this.callback(ylist);
+          expect(messages).have.length(0);
+        });
       });
 
       describe('yjs events handler', function() {
