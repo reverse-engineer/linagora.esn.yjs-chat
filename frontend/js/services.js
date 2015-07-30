@@ -35,9 +35,9 @@ angular.module('esn.chat')
     function mapToYList(id, jsArray, callback) {
       callback = callback || function() {};
 
-      var y = yjsService().y;
+      var y = yjsService.y;
 
-      yjsService().connector.whenSynced(function() {
+      yjsService.connector.whenSynced(function() {
         var ylist = y.val(id);
         var onChangeObserver = onChange(jsArray);
 

@@ -101,7 +101,7 @@ describe('The Services', function() {
 
     beforeEach(function() {
       var self = this;
-      this.yServiceData = {
+      this.yjsServiceData = {
         connector: {
           whenSynced: function(callback) {
             callback();
@@ -114,9 +114,8 @@ describe('The Services', function() {
           observe: function() {}
         }
       };
-      var yService = function() {
-        return self.yServiceData;
-      };
+      var yjsService = self.yjsServiceData;
+
       this.$window = {
         Y: {
           List: function() {
@@ -125,7 +124,7 @@ describe('The Services', function() {
       };
 
       module(function($provide) {
-        $provide.value('yjsService', yService);
+        $provide.value('yjsService', yjsService);
         $provide.value('$window', self.$window);
       });
       inject(function(yArraySynchronizer) {
@@ -140,7 +139,7 @@ describe('The Services', function() {
     });
 
     it('should call the callback when yjs isSynced is called', function() {
-      this.yServiceData.y.val = function() {
+      this.yjsServiceData.y.val = function() {
         return ylist;
       };
 
@@ -152,7 +151,7 @@ describe('The Services', function() {
     it('should create a new YList when the val does not exist', function(done) {
       var myTab = [];
 
-      this.yServiceData.y.val = function() {
+      this.yjsServiceData.y.val = function() {
         return undefined;
       };
 
@@ -168,7 +167,7 @@ describe('The Services', function() {
     it('should not create a new YList when the val exists', function(done) {
       var myTab = [];
 
-      this.yServiceData.y.val = function() {
+      this.yjsServiceData.y.val = function() {
         return ylist;
       };
 
@@ -189,7 +188,7 @@ describe('The Services', function() {
         mySpy;
 
       beforeEach(function() {
-        this.yServiceData.y = {
+        this.yjsServiceData.y = {
           val: function() {
             return ylist;
           },
@@ -217,7 +216,7 @@ describe('The Services', function() {
         callback(events);
         expect(ylist.observe).to.have.been.called.once;
 
-        expect(this.yServiceData.y.observe).to.have.been.called.once;
+        expect(this.yjsServiceData.y.observe).to.have.been.called.once;
       });
 
       it('should reattach the callbacks when y.val() has changed', function() {
@@ -231,7 +230,7 @@ describe('The Services', function() {
 
         this.yArraySynchronizer('test', myTab, mySpy);
 
-        this.yServiceData.y.val = function() {
+        this.yjsServiceData.y.val = function() {
           return newYList;
         };
 
