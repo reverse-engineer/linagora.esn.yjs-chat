@@ -26,7 +26,14 @@ describe('Directives', function() {
           toggle: function() {
             called++;
             config = popoverConfiguration;
-          }
+          },
+          destroy: function() {
+            called--;
+            config = {};
+          },
+          $promise: {then: function(callback) {
+            callback();
+          }}
         };
       };
       $provide.value('$popover', $popover);
@@ -53,7 +60,7 @@ describe('Directives', function() {
       $compile('<chat-message-bubble/>')(scope);
     });
 
-    it('should register chat:message:received with $rootScope and toggle popover if author is current attendee and close after $timeout', function() {
+    it('should register chat:message:received with $rootScope and toggle popover if author is current attendee and destroy popover after $timeout', function() {
       var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
@@ -69,7 +76,8 @@ describe('Directives', function() {
         scope: scope
       });
       $timeout.flush();
-      expect(called).to.equal(2);
+      expect(called).to.equal(0);
+      expect(config).to.deep.equal({});
     });
 
     it('should do nothing if if author is not current attendee', function() {
@@ -107,7 +115,8 @@ describe('Directives', function() {
         scope: scope
       });
       $timeout.flush();
-      expect(called).to.equal(2);
+      expect(called).to.equal(0);
+      expect(config).to.deep.equal({});
     });
 
     it('should open the chatBox if it is not displayed', function() {
