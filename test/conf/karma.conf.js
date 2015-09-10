@@ -14,6 +14,7 @@ module.exports = function(config) {
       'frontend/components/chai-spies/chai-spies.js',
       'frontend/components/awesome-yjs/frontend/js/angular-yjs.js',
       'frontend/components/Autolinker.js/dist/Autolinker.min.js',
+      'frontend/components/dynamic-directive/dist/dynamic-directive.min.js',
       'test/module.js',
       'test/unit-frontend/**/*.js',
       'frontend/js/**/*.js',
