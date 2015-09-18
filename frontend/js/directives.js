@@ -18,7 +18,7 @@ angular.module('esn.chat')
       scope.$on('chat:message:received', function(event, data) {
         if (canBeDisplayed && (scope.attendee && data.author === scope.attendee.easyrtcid)) {
           popoverConfiguration.content = data.message;
-          var popover = $popover(element, popoverConfiguration);
+          var popover = $popover(element.parent(), popoverConfiguration);
           popover.$promise.then(popover.toggle);
           $timeout(popover.destroy, CHAT_HIDE_TIMEOUT);
         }
