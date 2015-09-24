@@ -1,10 +1,11 @@
-.row.msg-container.base-sent
-  .row.messages.msg-sent(ng-class="{'myself': myself}")
-    .row.nopadding
+.msg-container.base-sent
+  .messages.msg-sent(ng-class="{'myself': myself}")
+    .nopadding
       chat-message-avatar(chat-message="chatMessage")
       p
         span.author {{::chatMessage.displayName}}
         span.divider -
         span.published.small {{::chatMessage.published | amDateFormat:'h:mm a'}}
         span.divider :
+        br
         span(ng-bind-html="::chatMessage.message | autolink")
