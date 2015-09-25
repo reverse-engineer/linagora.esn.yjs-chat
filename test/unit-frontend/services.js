@@ -250,6 +250,31 @@ describe('The Services', function() {
         expect(mySpy).to.have.been.called.once;
       });
 
+      it('should insert the existing array elements, in order, to the start of new yList when y.val() has changed', function() {
+        var newYList = {
+          observe: chai.spy(),
+          foo: 'bar',
+          elements: ['c'],
+          insert: function(position, element) {
+            newYList.elements.splice(0, 0, element);
+          }
+        },
+        events = [{
+          name: 'chat:messages'
+        }];
+        myTab = ['a', 'b'];
+
+        this.yArraySynchronizer('test', myTab, mySpy);
+
+        this.yjsServiceData.y.val = function() {
+          return newYList;
+        };
+
+
+        callback(events);
+        expect(newYList.elements).to.deep.equal(['a', 'b', 'c']);
+      });
+
     });
 
   });
