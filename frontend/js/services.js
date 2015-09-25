@@ -47,7 +47,12 @@ angular.module('esn.chat')
             return event.name === 'chat:messages';
           }).forEach(function() {
             var newYList = y.val('chat:messages');
+
             if (ylist !== newYList) {
+              for (var i = jsArray.length - 1; i >= 0; i--) {
+                newYList.insert(0, jsArray[i]);
+              }
+
               ylist = newYList;
               ylist.observe(onChangeObserver);
               callback(ylist);
@@ -58,9 +63,7 @@ angular.module('esn.chat')
 
         if (!ylist) {
           ylist = new $window.Y.List(jsArray);
-          if (jsArray.length > 0) {
-            y.val(id, ylist);
-          }
+          y.val(id, ylist);
         }
 
         ylist.observe(onChangeObserver);
