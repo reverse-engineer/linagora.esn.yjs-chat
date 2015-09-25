@@ -182,27 +182,6 @@ describe('The Services', function() {
       });
     });
 
-    it('should not call val if new YList is empty', function(done) {
-      var myTab = [];
-      var count = 0;
-
-      this.yjsServiceData.y.val = function() {
-        count++;
-        return undefined;
-      };
-
-      this.$window.Y.List = function(t) {
-        expect(t).to.equal(myTab);
-        return ylist;
-      };
-
-      this.yArraySynchronizer('test', myTab, function() {
-        expect(count).to.be.equal(1);
-        done();
-      });
-    });
-
-
     describe('observe chat:messages object', function() {
       var myTab = [],
         callback,

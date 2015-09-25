@@ -58,9 +58,7 @@ angular.module('esn.chat')
 
         if (!ylist) {
           ylist = new $window.Y.List(jsArray);
-          if (jsArray.length > 0) {
-            y.val(id, ylist);
-          }
+          y.val(id, ylist);
         }
 
         ylist.observe(onChangeObserver);
