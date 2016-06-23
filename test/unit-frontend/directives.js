@@ -145,7 +145,7 @@ describe('Directives', function() {
     };
 
     beforeEach(function() {
-      var easyRTCService = {
+      var webRTCService = {
         myEasyrtcid: function() {
           return easyrtcid;
         }
@@ -163,7 +163,7 @@ describe('Directives', function() {
       };
 
       angular.mock.module(function($provide) {
-        $provide.value('easyRTCService', easyRTCService);
+        $provide.value('webRTCService', webRTCService);
         $provide.value('chat', chatMock);
         $provide.value('localCameraScreenshot', localCameraScreenshotMock);
         $provide.value('currentConferenceState', self.currentConferenceState);
@@ -461,7 +461,7 @@ describe('Directives', function() {
       this.currentConferenceState = {
         getAttendeeByEasyrtcid: function() {}
       };
-      this.easyRTCServcice = {
+      this.webRTCService = {
         myEasyrtcid: function() {
           return 'myself';
         }
@@ -472,7 +472,7 @@ describe('Directives', function() {
         $provide.value('currentConferenceState', self.currentConferenceState);
         $provide.value('chatMessageAvatarDirective', function() {});
         $provide.value('amDateFormatFilter', function() {});
-        $provide.value('easyRTCService', self.easyRTCServcice);
+        $provide.value('webRTCService', self.webRTCService);
       });
     });
 
