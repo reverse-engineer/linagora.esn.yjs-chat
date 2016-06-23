@@ -41,11 +41,11 @@ angular.module('esn.chat')
     };
   })
 
-  .directive('chatMessageEditor', ['ChatMessage', 'chat', 'easyRTCService', 'localCameraScreenshot', 'CHAT_AVATAR_SIZE', 'currentConferenceState',
-    function(ChatMessage, chat, easyRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE, currentConferenceState) {
+  .directive('chatMessageEditor', ['ChatMessage', 'chat', 'webRTCService', 'localCameraScreenshot', 'CHAT_AVATAR_SIZE', 'currentConferenceState',
+    function(ChatMessage, chat, webRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE, currentConferenceState) {
 
       function getMyDisplayName() {
-        var myself = currentConferenceState.getAttendeeByEasyrtcid(easyRTCService.myEasyrtcid());
+        var myself = currentConferenceState.getAttendeeByEasyrtcid(webRTCService.myEasyrtcid());
         return (myself && myself.displayName) ? myself.displayName : null;
       }
 
@@ -56,7 +56,7 @@ angular.module('esn.chat')
           var avatar = localCameraScreenshot.shoot(CHAT_AVATAR_SIZE);
 
           var chatMsgData = {
-            author: easyRTCService.myEasyrtcid(),
+            author: webRTCService.myEasyrtcid(),
             authorAvatar: avatar ? avatar.src : null,
             published: Date.now(),
             message: scope.messageContent,
@@ -80,7 +80,7 @@ angular.module('esn.chat')
       };
     }])
 
-    .directive('chatMessageDisplay', ['easyRTCService', function(easyRTCService) {
+    .directive('chatMessageDisplay', ['webRTCService', function(webRTCService) {
 
       return {
         restrict: 'E',
@@ -90,7 +90,7 @@ angular.module('esn.chat')
         },
 
         link: function($scope) {
-          $scope.myself = easyRTCService.myEasyrtcid() === $scope.chatMessage.author;
+          $scope.myself = webRTCService.myEasyrtcid() === $scope.chatMessage.author;
         }
       };
     }])
