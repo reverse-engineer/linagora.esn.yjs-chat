@@ -4,9 +4,9 @@ var controller;
 
 function info(req, res) {
   return controller.info().then(function(info) {
-    return res.json(200, { info: info });
+    return res.status(200).json({info: info});
   }, function(err) {
-    return res.json(500, { error: err.message });
+    return res.status(500).json({error: err.message});
   });
 }
 

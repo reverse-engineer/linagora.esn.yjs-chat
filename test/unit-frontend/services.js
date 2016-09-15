@@ -4,12 +4,11 @@
 var expect = chai.expect;
 
 describe('The Services', function() {
-
   describe('The messageAvatarService service', function() {
-
+    var newCanvas, currentConferenceState, attendeeColorsService, drawHelper, messageAvatarService, DEFAULT_AVATAR;
     beforeEach(function() {
 
-      this.newCanvas = {
+      newCanvas = {
         getContext: function() {
           return {
             drawImage: function() {
@@ -22,86 +21,81 @@ describe('The Services', function() {
         }
       };
 
-      this.currentConferenceState = {};
-      this.attendeeColorsService = {};
-      this.drawHelper = {};
-      var self = this;
+      currentConferenceState = {};
+      attendeeColorsService = {};
+      drawHelper = {};
+
 
       angular.mock.module('esn.chat');
       angular.mock.module(function($provide) {
         $provide.value('newCanvas', function() {
-          return self.newCanvas;
+          return newCanvas;
         });
-        $provide.value('currentConferenceState', self.currentConferenceState);
-        $provide.value('attendeeColorsService', self.attendeeColorsService);
-        $provide.value('drawHelper', self.drawHelper);
+        $provide.value('currentConferenceState', currentConferenceState);
+        $provide.value('attendeeColorsService', attendeeColorsService);
+        $provide.value('drawHelper', drawHelper);
       });
     });
 
-    beforeEach(inject(['$compile', '$rootScope', 'messageAvatarService', 'DEFAULT_AVATAR', function($c, $r, messageAvatarService, DEFAULT_AVATAR) {
-      this.$compile = $c;
-      this.$rootScope = $r;
-      this.$scope = this.$rootScope.$new();
-      this.messageAvatarService = messageAvatarService;
-      this.DEFAULT_AVATAR = DEFAULT_AVATAR;
-    }]));
+    beforeEach(inject(function(_messageAvatarService_, _DEFAULT_AVATAR_) {
+      messageAvatarService = _messageAvatarService_;
+      DEFAULT_AVATAR = _DEFAULT_AVATAR_;
+    }));
 
     describe('The generate function', function() {
 
       it('should send back DEFAULT_AVATAR when attendee not found', function(done) {
-        var self = this;
-        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+
+        currentConferenceState.getAttendeeByEasyrtcid = function() {
           return;
         };
 
-        this.messageAvatarService.generate({}, function(err, result) {
-          expect(result).to.equal(self.DEFAULT_AVATAR);
+        messageAvatarService.generate({}, function(err, result) {
+          expect(result).to.equal(DEFAULT_AVATAR);
           done();
         });
       });
 
       it('should send back DEFAULT_AVATAR when attendee does not have avatar', function(done) {
-        var self = this;
-        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        currentConferenceState.getAttendeeByEasyrtcid = function() {
           return {};
         };
 
-        this.messageAvatarService.generate({}, function(err, result) {
-          expect(result).to.equal(self.DEFAULT_AVATAR);
+        messageAvatarService.generate({}, function(err, result) {
+          expect(result).to.equal(DEFAULT_AVATAR);
           done();
         });
 
       });
 
       it('should generate the image from canvas', function(done) {
-        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        currentConferenceState.getAttendeeByEasyrtcid = function() {
           return {avatar: 1};
         };
-        this.currentConferenceState.getAvatarImageByIndex = function(index, callback) {
+        currentConferenceState.getAvatarImageByIndex = function(index, callback) {
           return callback(null, 'image');
         };
-        this.attendeeColorsService.getColorForAttendeeAtIndex = function() {
+        attendeeColorsService.getColorForAttendeeAtIndex = function() {
         };
-        this.drawHelper.drawImage = function() {
+        drawHelper.drawImage = function() {
           done();
         };
-        this.messageAvatarService.generate({});
+        messageAvatarService.generate({});
       });
     });
   });
 
-
   describe('the yArraySynchronizer factory', function() {
 
-    var ylist;
+    var ylist, yjsServiceData, $window, yArraySynchronizer;
 
     beforeEach(function() {
       module('esn.chat');
     });
 
     beforeEach(function() {
-      var self = this;
-      this.yjsServiceData = {
+
+      yjsServiceData = {
         connector: {
           whenSynced: function(callback) {
             callback();
@@ -114,9 +108,8 @@ describe('The Services', function() {
           observe: function() {}
         }
       };
-      var yjsService = self.yjsServiceData;
 
-      this.$window = {
+      $window = {
         Y: {
           List: function() {
           }
@@ -124,11 +117,11 @@ describe('The Services', function() {
       };
 
       module(function($provide) {
-        $provide.value('yjsService', yjsService);
-        $provide.value('$window', self.$window);
+        $provide.value('yjsService', yjsServiceData);
+        $provide.value('$window', $window);
       });
-      inject(function(yArraySynchronizer) {
-        self.yArraySynchronizer = yArraySynchronizer;
+      inject(function(_yArraySynchronizer_) {
+        yArraySynchronizer = _yArraySynchronizer_;
       });
 
       ylist = {
@@ -139,45 +132,45 @@ describe('The Services', function() {
     });
 
     it('should call the callback when yjs isSynced is called', function() {
-      this.yjsServiceData.y.val = function() {
+      yjsServiceData.y.val = function() {
         return ylist;
       };
 
       var spy = chai.spy();
-      this.yArraySynchronizer('test', [], spy);
+      yArraySynchronizer('test', [], spy);
       expect(spy).to.been.called.with(ylist);
     });
 
     it('should create a new YList when the val does not exist', function(done) {
       var myTab = [];
 
-      this.yjsServiceData.y.val = function() {
+      yjsServiceData.y.val = function() {
         return undefined;
       };
 
-      this.$window.Y.List = function(t) {
+      $window.Y.List = function(t) {
         expect(t).to.equal(myTab);
         done();
         return ylist;
       };
 
-      this.yArraySynchronizer('test', myTab);
+      yArraySynchronizer('test', myTab);
     });
 
     it('should not create a new YList when the val exists', function(done) {
       var myTab = [];
 
-      this.yjsServiceData.y.val = function() {
+      yjsServiceData.y.val = function() {
         return ylist;
       };
 
-      this.$window.Y.List = function(t) {
+      $window.Y.List = function(t) {
         expect(t).to.equal(myTab);
         done(new Error('new ylist creation'));
         return ylist;
       };
 
-      this.yArraySynchronizer('test', myTab, function() {
+      yArraySynchronizer('test', myTab, function() {
         done();
       });
     });
@@ -188,7 +181,7 @@ describe('The Services', function() {
         mySpy;
 
       beforeEach(function() {
-        this.yjsServiceData.y = {
+        yjsServiceData.y = {
           val: function() {
             return ylist;
           },
@@ -197,7 +190,7 @@ describe('The Services', function() {
           })
         };
         ylist.observe = chai.spy();
-        this.$window.Y.List = function(t) {
+        $window.Y.List = function(t) {
           return ylist;
         };
 
@@ -210,13 +203,13 @@ describe('The Services', function() {
           name: 'chat:messages'
         }];
 
-        this.yArraySynchronizer('test', myTab, mySpy);
+        yArraySynchronizer('test', myTab, mySpy);
 
         expect(ylist.observe).to.have.been.called.once;
         callback(events);
         expect(ylist.observe).to.have.been.called.once;
 
-        expect(this.yjsServiceData.y.observe).to.have.been.called.once;
+        expect(yjsServiceData.y.observe).to.have.been.called.once;
       });
 
       it('should reattach the callbacks when y.val() has changed', function() {
@@ -228,9 +221,9 @@ describe('The Services', function() {
             name: 'chat:messages'
           }];
 
-        this.yArraySynchronizer('test', myTab, mySpy);
+        yArraySynchronizer('test', myTab, mySpy);
 
-        this.yjsServiceData.y.val = function() {
+        yjsServiceData.y.val = function() {
           return newYList;
         };
 
@@ -241,10 +234,10 @@ describe('The Services', function() {
 
       it('shouldn\'t reattach the callbacks when other yjs variables are changed', function() {
         var events = [{
-          name: 'this is another shared variable'
+          name: 'self is another shared variable'
         }];
 
-        this.yArraySynchronizer('test', myTab, mySpy);
+        yArraySynchronizer('test', myTab, mySpy);
 
         callback(events);
         expect(mySpy).to.have.been.called.once;
@@ -264,12 +257,11 @@ describe('The Services', function() {
         }];
         myTab = ['a', 'b'];
 
-        this.yArraySynchronizer('test', myTab, mySpy);
+        yArraySynchronizer('test', myTab, mySpy);
 
-        this.yjsServiceData.y.val = function() {
+        yjsServiceData.y.val = function() {
           return newYList;
         };
-
 
         callback(events);
         expect(newYList.elements).to.deep.equal(['a', 'b', 'c']);
@@ -280,11 +272,12 @@ describe('The Services', function() {
   });
 
   describe('the chat factory', function() {
-    var chatFactory, yList, $rootScope, message;
+    var chatFactory, yList, $rootScope, message,
+        yArraySynchronizerMock, yArraySynchronizer, yListToMessagesMock, yListToMessages;
 
     beforeEach(module('esn.chat'));
     beforeEach(function() {
-      var self = this;
+
       var yService = function() {
         return {
           connector: {
@@ -301,19 +294,19 @@ describe('The Services', function() {
         push: chai.spy()
       };
 
-      this.yArraySynchronizerMock = function(channel, messages, callback) {
+      yArraySynchronizerMock = function(channel, messages, callback) {
         callback(yList);
       };
 
-      var yArraySynchronizer = function(channel, messages, callback) {
-        return self.yArraySynchronizerMock(channel, messages, callback);
+      yArraySynchronizer = function(channel, messages, callback) {
+        return yArraySynchronizerMock(channel, messages, callback);
       };
 
-      this.yListToMessagesMock = function() {
+      yListToMessagesMock = function() {
       };
 
-      var yListToMessages = function(ylist, messages) {
-        return self.yListToMessagesMock(ylist, messages);
+      yListToMessages = function(ylist, messages) {
+        return yListToMessagesMock(ylist, messages);
       };
 
 
@@ -376,7 +369,7 @@ describe('The Services', function() {
     describe('the sendMessage method', function() {
 
       it('should push the message in the native messages array if the ylist is not initialized', function() {
-        this.yArraySynchronizerMock = function() {};
+        yArraySynchronizerMock = function() {};
 
         inject(function(chat) {
           chatFactory = chat;
@@ -432,7 +425,7 @@ describe('The Services', function() {
 
     describe('initialization code', function() {
       it('should register a yArraySynchronizer array', function(done) {
-        this.yArraySynchronizerMock = function(channel, messages, callback) {
+        yArraySynchronizerMock = function(channel, messages, callback) {
           expect(channel).to.equal('chat:messages');
           expect(messages).to.be.an('array');
           expect(messages).to.have.length(0);
@@ -444,10 +437,12 @@ describe('The Services', function() {
         });
       });
       describe('yArraySynchronizer callback', function() {
+        var callbackMock;
+
         beforeEach(function() {
-          var self = this;
-          this.yArraySynchronizerMock = function(channel, messages, callback) {
-            self.callback = callback;
+
+          yArraySynchronizerMock = function(channel, messages, callback) {
+            callbackMock = callback;
           };
           inject(function(chat) {
             chatFactory = chat;
@@ -458,17 +453,17 @@ describe('The Services', function() {
           var ylist = {
             observe: function() {}
           };
-          this.callback(ylist);
+          callbackMock(ylist);
           expect(chatFactory.yMessages).to.equal(ylist);
         });
         it('should call the yListToMessages service', function() {
           var ylist = {
             observe: function() {}
           };
-          this.yListToMessagesMock = function(ylist, messages) {
+          yListToMessagesMock = function(ylist, messages) {
             messages.push('hello');
           };
-          this.callback(ylist);
+          callbackMock(ylist);
           expect(chatFactory.messages).to.deep.equal(['hello']);
         });
         it('should call $rootScope.$applyAsync', function(done) {
@@ -476,7 +471,7 @@ describe('The Services', function() {
             observe: function() {}
           };
           $rootScope.$applyAsync = done;
-          this.callback(ylist);
+          callbackMock(ylist);
         });
         it('should flush the messages array', function() {
           var messages = chatFactory.messages;
@@ -486,18 +481,20 @@ describe('The Services', function() {
           var ylist = {
             observe: function() {}
           };
-          this.callback(ylist);
+          callbackMock(ylist);
           expect(messages).have.length(0);
         });
       });
 
       describe('yjs events handler', function() {
+        var handler;
+
         beforeEach(function() {
-          var self = this;
-          this.yArraySynchronizerMock = function(channel, messages, callback) {
+
+          yArraySynchronizerMock = function(channel, messages, callback) {
             callback({
               observe: function(callback) {
-                self.handler = callback;
+                handler = callback;
               },
               val: function() {
                 return yList;
@@ -527,7 +524,7 @@ describe('The Services', function() {
           $rootScope.$on('chat:message:received', function(evt, data) {
             received.push(data);
           });
-          this.handler(events);
+          handler(events);
           expect(received).to.deep.equal(['test1', 'test2']);
         });
 
@@ -550,7 +547,7 @@ describe('The Services', function() {
           $rootScope.$on('chat:message:received', function(evt, data) {
             received.push(data);
           });
-          this.handler(events);
+          handler(events);
           expect(chatFactory.unread).to.equal(2);
         });
 
@@ -574,7 +571,7 @@ describe('The Services', function() {
           $rootScope.$on('chat:message:received', function(evt, data) {
             received.push(data);
           });
-          this.handler(events);
+          handler(events);
           expect(chatFactory.unread).to.equal(0);
         });
       });
