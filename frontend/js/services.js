@@ -83,6 +83,13 @@ angular.module('esn.chat')
   .factory('chat', ['$rootScope', 'yjsService', 'yArraySynchronizer', 'yListToMessages',
     function($rootScope, yjsService, yArraySynchronizer, yListToMessages) {
 
+      var ret = {
+        yMessages: null,
+        messages: [],
+        opened: false,
+        unread: 0
+      };
+
       function sendMessage(chatMessage) {
         if (!chatMessage) {
           throw new Error('No message provided');
@@ -98,14 +105,8 @@ angular.module('esn.chat')
         $rootScope.$broadcast('chat:window:visibility', {visible: ret.opened});
       }
 
-      var ret = {
-        yMessages: null,
-        messages: [],
-        opened: false,
-        unread: 0,
-        toggleWindow: toggleWindow,
-        sendMessage: sendMessage
-      };
+      ret.sendMessage = sendMessage;
+      ret.toggleWindow = toggleWindow;
 
       var callback = function(yList) {
         ret.yMessages = yList;
