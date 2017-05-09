@@ -7,7 +7,6 @@
     "awesome-module": "1.0.0",
     "bower": "1.7.9",
     "express": "4.12.4",
-    "i18n": "0.8.3",
     "less-middleware": "2.0.1",
     "q": "1.4.1"
   },
