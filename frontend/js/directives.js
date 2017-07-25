@@ -16,7 +16,7 @@ angular.module('esn.chat')
       };
 
       scope.$on('chat:message:received', function(event, data) {
-        if (canBeDisplayed && (scope.attendee && data.author === scope.attendee.easyrtcid)) {
+        if (canBeDisplayed && (scope.attendee && data.author === scope.attendee.rtcid)) {
           popoverConfiguration.content = data.message;
           var popover = $popover(element.parent(), popoverConfiguration);
           popover.$promise.then(popover.toggle);
@@ -45,7 +45,7 @@ angular.module('esn.chat')
     function(ChatMessage, chat, webRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE, currentConferenceState) {
 
       function getMyDisplayName() {
-        var myself = currentConferenceState.getAttendeeByEasyrtcid(webRTCService.myEasyrtcid());
+        var myself = currentConferenceState.getAttendeeByRtcid(webRTCService.myRtcid());
         return (myself && myself.displayName) ? myself.displayName : null;
       }
 
@@ -56,7 +56,7 @@ angular.module('esn.chat')
           var avatar = localCameraScreenshot.shoot(CHAT_AVATAR_SIZE);
 
           var chatMsgData = {
-            author: webRTCService.myEasyrtcid(),
+            author: webRTCService.myRtcid(),
             authorAvatar: avatar ? avatar.src : null,
             published: Date.now(),
             message: scope.messageContent,
@@ -90,7 +90,7 @@ angular.module('esn.chat')
         },
 
         link: function($scope) {
-          $scope.myself = webRTCService.myEasyrtcid() === $scope.chatMessage.author;
+          $scope.myself = webRTCService.myRtcid() === $scope.chatMessage.author;
         }
       };
     }])
