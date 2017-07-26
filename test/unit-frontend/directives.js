@@ -55,7 +55,7 @@ describe('Directives', function() {
     beforeEach(function() {
       scope = $rootScope.$new();
       scope.attendee = {
-        easyrtcid: '54321'
+        rtcid: '54321'
       };
       $compile('<chat-message-bubble/>')(scope);
     });
@@ -139,15 +139,15 @@ describe('Directives', function() {
   describe('the chatMessageEditor directive', function() {
 
     var chatMock = {};
-    var easyrtcid = 'easyrtcid';
+    var rtcid = 'rtcid';
     var avatar = {
       src: 'avatarSrc'
     };
 
     beforeEach(function() {
       var webRTCService = {
-        myEasyrtcid: function() {
-          return easyrtcid;
+        myRtcid: function() {
+          return rtcid;
         }
       };
 
@@ -208,7 +208,7 @@ describe('Directives', function() {
     describe('the createMessage function', function() {
       it('should create and send a message from ', function() {
         var msgDisplayName = 'user1';
-        this.currentConferenceState.getAttendeeByEasyrtcid = function() {
+        this.currentConferenceState.getAttendeeByRtcid = function() {
           return {
             displayName: msgDisplayName
           };
@@ -217,7 +217,7 @@ describe('Directives', function() {
         this.scope.messageContent = msgContent;
 
         chatMock.sendMessage = function(msg) {
-          expect(msg.author).to.equal(easyrtcid);
+          expect(msg.author).to.equal(rtcid);
           expect(msg.authorAvatar).to.deep.equal(avatar.src);
           expect(msg.message).to.equal(msgContent);
           expect(msg.displayName).to.equal(msgDisplayName);
@@ -459,10 +459,10 @@ describe('Directives', function() {
 
     beforeEach(function() {
       this.currentConferenceState = {
-        getAttendeeByEasyrtcid: function() {}
+        getAttendeeByRtcid: function() {}
       };
       this.webRTCService = {
-        myEasyrtcid: function() {
+        myRtcid: function() {
           return 'myself';
         }
       };

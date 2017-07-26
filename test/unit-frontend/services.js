@@ -46,7 +46,7 @@ describe('The Services', function() {
 
       it('should send back DEFAULT_AVATAR when attendee not found', function(done) {
 
-        currentConferenceState.getAttendeeByEasyrtcid = function() {
+        currentConferenceState.getAttendeeByRtcid = function() {
           return;
         };
 
@@ -57,7 +57,7 @@ describe('The Services', function() {
       });
 
       it('should send back DEFAULT_AVATAR when attendee does not have avatar', function(done) {
-        currentConferenceState.getAttendeeByEasyrtcid = function() {
+        currentConferenceState.getAttendeeByRtcid = function() {
           return {};
         };
 
@@ -69,7 +69,7 @@ describe('The Services', function() {
       });
 
       it('should generate the image from canvas', function(done) {
-        currentConferenceState.getAttendeeByEasyrtcid = function() {
+        currentConferenceState.getAttendeeByRtcid = function() {
           return {avatar: 1};
         };
         currentConferenceState.getAvatarImageByIndex = function(index, callback) {

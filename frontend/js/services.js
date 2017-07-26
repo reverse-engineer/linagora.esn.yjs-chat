@@ -143,7 +143,7 @@ angular.module('esn.chat')
 
       function generate(author, callback) {
 
-        var attendee = currentConferenceState.getAttendeeByEasyrtcid(author);
+        var attendee = currentConferenceState.getAttendeeByRtcid(author);
         if (!attendee || !attendee.avatar) {
           return callback(null, DEFAULT_AVATAR);
         }
