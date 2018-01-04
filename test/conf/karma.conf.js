@@ -12,7 +12,7 @@ module.exports = function(config) {
       'frontend/components/angular-mocks/angular-mocks.js',
       'frontend/components/chai/chai.js',
       'frontend/components/chai-spies/chai-spies.js',
-      'frontend/components/awesome-yjs/frontend/js/angular-yjs.js',
+      'frontend/components/linagora.esn.yjs/frontend/js/angular-yjs.js',
       'frontend/components/Autolinker.js/dist/Autolinker.min.js',
       'frontend/components/dynamic-directive/dist/dynamic-directive.min.js',
       'test/module.js',
