@@ -1,7 +1,7 @@
 {
-  "name": "awesome-chat",
+  "name": "linagora.esn.yjs-chat",
   "version": "0.1.0",
-  "description": "",
+  "description": "Y.js based chat",
   "main": "backend/index.js",
   "dependencies": {
     "awesome-module": "1.0.0",

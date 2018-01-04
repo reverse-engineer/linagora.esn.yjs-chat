@@ -3,7 +3,7 @@
 var AwesomeModule = require('awesome-module');
 var Dependency = AwesomeModule.AwesomeModuleDependency;
 
-var AwesomeChatModule = new AwesomeModule('linagora.esn.chat', {
+var AwesomeChatModule = new AwesomeModule('linagora.esn.yjs-chat', {
   dependencies: [
     new Dependency(Dependency.TYPE_NAME, 'webserver.wrapper', 'webserver-wrapper'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.io.meetings.core.i18n', 'i18n')
