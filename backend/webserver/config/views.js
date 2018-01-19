@@ -8,6 +8,7 @@ module.exports = function(dependencies, application) {
   application.set('views', FRONTEND_PATH + '/views');
   application.get('/views/*', function(req, res) {
       var templateName = req.params[0].replace(/\.html$/, '');
+
       res.render(templateName);
     }
   );
