@@ -18,21 +18,20 @@
   ],
   "dependencies": {
     "angular-truncate": "sparkalow/angular-truncate",
-    "jquery": "~2.1.4",
+    "jquery": "2.1.4",
     "Autolinker.js": "~0.17.2"
   },
   "devDependencies": {
-    "chai": "~3.0.0",
-    "chai-spies": "chaijs/chai-spies#~0.6.0",
-    "angular": "1.3.15",
-    "angular-mocks": "1.3.15",
+    "chai": "4.0.0",
+    "chai-spies": "1.0.0",
+    "angular": "1.6.8",
+    "angular-mocks": "1.6.8",
     "linagora.esn.yjs": "linagora/linagora.esn.yjs",
-    "angular-liveconference": "https://ci.open-paas.org/stash/scm/opangmod/angular-liveconference.git",
-    "dynamic-directive": "~1.0.0"
+    "angular-liveconference": "https://ci.linagora.com/linagora/lgs/openpaas/angular-liveconference.git#janus",
+    "dynamic-directive": "1.0.0"
   },
   "resolutions": {
-    "chai": ">=3.0.0",
-    "jquery": ">=2.1.4",
-    "angular": "1.3.15"
+    "jquery": "2.1.4",
+    "angular": "1.6.8"
   }
 }
