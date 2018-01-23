@@ -8,7 +8,7 @@ describe('Directives', function() {
 
   beforeEach(function() {
     module('esn.chat');
-    module('jadeTemplates');
+    module('pugTemplates');
   });
 
   describe('The chatMessageBubble directive', function() {
@@ -237,7 +237,7 @@ describe('Directives', function() {
       this.messageAvatarService = {};
       var self = this;
 
-      module('jadeTemplates');
+      module('pugTemplates');
       angular.mock.module('esn.chat');
 
       angular.mock.module(function($provide) {
@@ -336,7 +336,7 @@ describe('Directives', function() {
     var rootScope;
     beforeEach(function() {
       module('esn.chat');
-      module('jadeTemplates');
+      module('pugTemplates');
     });
     beforeEach(module(function($provide) {
       chat = {

@@ -18,7 +18,7 @@ module.exports = function(config) {
       'test/module.js',
       'test/unit-frontend/**/*.js',
       'frontend/js/**/*.js',
-      'frontend/views/*.jade'
+      'frontend/views/*.pug'
     ],
 
     frameworks: ['mocha'],
@@ -29,19 +29,27 @@ module.exports = function(config) {
     reporters: ['coverage', 'spec'],
     preprocessors: {
       'frontend/js/**/*.js': ['coverage'],
-      'frontend/views/*.jade': ['ng-jade2module']
+      'frontend/views/*.pug': ['ng-jade2module']
 
     },
     ngJade2ModulePreprocessor: {
+      cacheIdFromPath: function(filepath) {
+        var cacheId = '';
+
+        if (filepath.match(/^frontend*/)) {
+          cacheId = '/chat' + filepath.substr(8).replace('.pug', '.html');
+        }
+
+        return cacheId;
+      },
       stripPrefix: 'frontend/',
-      prependPrefix: '/chat/',
       jadeRenderConfig: {
         __: function(str) { return str; }
       },
 
       // setting this option will create only a single module that contains templates
       // from all the files, so you can load them all with module('templates')
-      moduleName: 'jadeTemplates'
+      moduleName: 'pugTemplates'
     },
     plugins: [
       'karma-phantomjs-launcher',
