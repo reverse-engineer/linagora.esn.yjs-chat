@@ -21,6 +21,7 @@ angular.module('esn.chat')
           var type = event.type,
               value = event.value,
               position = event.position;
+
           if (type === 'delete') {
             jsArray.splice(position, 1);
           } else if (type === 'insert') {
@@ -70,11 +71,13 @@ angular.module('esn.chat')
         callback(ylist);
       });
     }
+
     return mapToYList;
   }])
   .factory('yListToMessages', ['ChatMessage', function(ChatMessage) {
     return function yListToMessages(ylist, messages) {
       var ymsgs = ylist.val();
+
       ymsgs.forEach(function(msg) {
         messages.push(new ChatMessage(msg));
       });
@@ -82,7 +85,6 @@ angular.module('esn.chat')
   }])
   .factory('chat', ['$rootScope', 'yjsService', 'yArraySynchronizer', 'yListToMessages',
     function($rootScope, yjsService, yArraySynchronizer, yListToMessages) {
-
       var ret = {
         yMessages: null,
         messages: [],
@@ -142,8 +144,8 @@ angular.module('esn.chat')
     .factory('messageAvatarService', ['newCanvas', 'currentConferenceState', 'attendeeColorsService', 'drawHelper', 'CHAT_AVATAR_SIZE', 'DEFAULT_AVATAR', function(newCanvas, currentConferenceState, attendeeColorsService, drawHelper, CHAT_AVATAR_SIZE, DEFAULT_AVATAR) {
 
       function generate(author, callback) {
-
         var attendee = currentConferenceState.getAttendeeByRtcid(author);
+
         if (!attendee || !attendee.avatar) {
           return callback(null, DEFAULT_AVATAR);
         }

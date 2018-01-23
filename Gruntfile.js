@@ -2,8 +2,6 @@
 
 /* eslint-disable no-process-env, no-console */
 module.exports = function(grunt) {
-  var CI = grunt.option('ci');
-
   var testArgs = (function() {
     var opts = ['test', 'chunk'];
     var args = {};

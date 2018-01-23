@@ -19,6 +19,7 @@ angular.module('esn.chat')
         if (canBeDisplayed && (scope.attendee && data.author === scope.attendee.rtcid)) {
           popoverConfiguration.content = data.message;
           var popover = $popover(element.parent(), popoverConfiguration);
+
           popover.$promise.then(popover.toggle);
           $timeout(popover.destroy, CHAT_HIDE_TIMEOUT);
         }
@@ -46,6 +47,7 @@ angular.module('esn.chat')
 
       function getMyDisplayName() {
         var myself = currentConferenceState.getAttendeeByRtcid(webRTCService.myRtcid());
+
         return (myself && myself.displayName) ? myself.displayName : null;
       }
 
@@ -62,6 +64,7 @@ angular.module('esn.chat')
             message: scope.messageContent,
             displayName: getMyDisplayName()
           };
+
           chat.sendMessage(new ChatMessage(chatMsgData));
           scope.messageContent = '';
         };
@@ -101,6 +104,7 @@ angular.module('esn.chat')
 
         if ($scope.chatMessage.authorAvatar) {
           $scope.avatar = $scope.chatMessage.authorAvatar;
+
           return;
         }
 
@@ -123,6 +127,7 @@ angular.module('esn.chat')
     function link(scope) {
       scope.chat = chat;
     }
+
     return {
       restrict: 'E',
       link: link,
@@ -132,7 +137,7 @@ angular.module('esn.chat')
   }])
 
   .directive('chatWindow', function($rootScope, CHAT_WINDOW_SIZE) {
-    function link(scope, element, attrs) {
+    function link(scope, element) {
       scope.$on('chat:window:visibility', function(evt, data) {
         if (data.visible) {
           element.addClass('visible');
@@ -143,6 +148,7 @@ angular.module('esn.chat')
         }
       });
     }
+
     return {
       restrict: 'E',
       replace: true,
@@ -159,7 +165,7 @@ angular.module('esn.chat')
     }
 
     function shouldSuspendAutoScroll(element) {
-      return getScrollDistanceFromBottom(element) <= offByOneError ? false : true;
+      return getScrollDistanceFromBottom(element) > offByOneError;
     }
 
     function scrollToBottom(element) {
@@ -168,6 +174,7 @@ angular.module('esn.chat')
 
     function link(scope, element) {
       var suspended = false;
+
       element.on('scroll', function() {
         suspended = shouldSuspendAutoScroll(element);
       });

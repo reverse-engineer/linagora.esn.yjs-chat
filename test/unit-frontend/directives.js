@@ -62,6 +62,7 @@ describe('Directives', function() {
 
     it('should register chat:message:received with $rootScope and toggle popover if author is current attendee and destroy popover after $timeout', function() {
       var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
+
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
@@ -82,6 +83,7 @@ describe('Directives', function() {
 
     it('should do nothing if if author is not current attendee', function() {
       var message = new ChatMessage({ author: '12345', authorAvatar: 'avatar', published: Date.now(), message: 'a new message' });
+
       $rootScope.$broadcast('chat:message:received', message);
       $rootScope.$digest();
 
@@ -90,6 +92,7 @@ describe('Directives', function() {
 
     it('should do nothing if canBeDisplayed is false even if author is current attendee', function() {
       var message = new ChatMessage({ author: '54321', authorAvatar: 'avatar', published: 'a new date', message: 'a new message' });
+
       $rootScope.$broadcast('chat:window:visibility', { visible: true });
       $rootScope.$digest();
 
@@ -208,12 +211,14 @@ describe('Directives', function() {
     describe('the createMessage function', function() {
       it('should create and send a message from ', function() {
         var msgDisplayName = 'user1';
+
         this.currentConferenceState.getAttendeeByRtcid = function() {
           return {
             displayName: msgDisplayName
           };
         };
         var msgContent = 'content';
+
         this.scope.messageContent = msgContent;
 
         chatMock.sendMessage = function(msg) {
@@ -254,7 +259,9 @@ describe('Directives', function() {
       this.initDirective = function(scope) {
         var html = '<chat-message-avatar chat-message="chatMessage"/>';
         var element = this.$compile(html)(scope);
+
         scope.$digest();
+
         return element;
       };
     }]));
@@ -294,8 +301,11 @@ describe('Directives', function() {
         return callback(new Error());
       };
       var element = this.initDirective(this.$scope);
+
       this.$scope.$digest();
+
       var iscope = element.isolateScope();
+
       expect(iscope.avatar).to.equal(this.DEFAULT_AVATAR);
     });
 
@@ -308,8 +318,11 @@ describe('Directives', function() {
         return callback();
       };
       var element = this.initDirective(this.$scope);
+
       this.$scope.$digest();
+
       var iscope = element.isolateScope();
+
       expect(iscope.avatar).to.equals(this.DEFAULT_AVATAR);
     });
 
@@ -323,8 +336,11 @@ describe('Directives', function() {
         return callback(null, result);
       };
       var element = this.initDirective(this.$scope);
+
       this.$scope.$digest();
+
       var iscope = element.isolateScope();
+
       expect(iscope.avatar).to.equals(result);
     });
   });
@@ -334,6 +350,7 @@ describe('Directives', function() {
     var scope;
     var element;
     var rootScope;
+
     beforeEach(function() {
       module('esn.chat');
       module('pugTemplates');
@@ -488,15 +505,17 @@ describe('Directives', function() {
       this.initDirective = function(scope) {
         var html = '<chat-message-display chat-message="message"/>';
         var element = this.$compile(html)(scope);
+
         scope.$digest();
+
         return element;
       };
     }));
 
     it('should set $scope.myself to true when message is sent by the local user', function() {
       this.$scope.message = { author: 'myself' };
-
       var element = this.initDirective(this.$scope);
+
       this.$scope.$digest();
 
       expect(element.isolateScope().myself).to.be.true;
@@ -504,8 +523,8 @@ describe('Directives', function() {
 
     it('should set $scope.myself to false when message is sent by a peer', function() {
       this.$scope.message = { author: 'remote peer' };
-
       var element = this.initDirective(this.$scope);
+
       this.$scope.$digest();
 
       expect(element.isolateScope().myself).to.be.false;
@@ -523,8 +542,10 @@ describe('Directives', function() {
       this.initDirective = function(scope) {
         var html = '<div chat-auto-scroll style="height: 150px; overflow: scroll;">';
         var element = this.$compile(html)(scope);
+
         $('body').append(element); // give dimensions to element
         scope.$digest();
+
         return element;
       };
 
@@ -533,15 +554,16 @@ describe('Directives', function() {
           return 'top';
         } else if (element.prop('scrollHeight') - element.height() - element.prop('scrollTop') <= 1) {
           return 'bottom';
-        } else {
-          return 'middle';
         }
+
+        return 'middle';
       };
     }));
 
     it('should autoScroll', function() {
       this.$scope.messages = [];
       var element = this.initDirective(this.$scope);
+
       this.$rootScope.$apply();
       this.$scope.messages = [1];
       element.append($(this.messageHTML));
@@ -553,6 +575,7 @@ describe('Directives', function() {
     it('should not autoScroll when user scrolled up', function() {
       this.$scope.messages = [];
       var element = this.initDirective(this.$scope);
+
       this.$rootScope.$apply();
       this.$scope.messages = [1];
       element.append($(this.messageHTML));
@@ -567,8 +590,5 @@ describe('Directives', function() {
       this.$rootScope.$apply();
       expect(this.getScrollPosition(element)).to.equal('middle');
     });
-
-
   });
-
 });

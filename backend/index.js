@@ -20,9 +20,11 @@ var AwesomeChatModule = new AwesomeModule('linagora.esn.yjs-chat', {
     },
     deploy: function(dependencies, callback) {
       var application = require('./webserver/application')(dependencies);
+
       application.use('/', this.api.chat);
 
       var webserver = dependencies('webserver-wrapper');
+
       webserver.injectAngularModules('chat', [
         'app.js',
         'services.js',
