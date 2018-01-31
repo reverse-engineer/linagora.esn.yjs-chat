@@ -6,6 +6,7 @@ var expect = chai.expect;
 describe('The Services', function() {
   describe('The messageAvatarService service', function() {
     var newCanvas, currentConferenceState, attendeeColorsService, drawHelper, messageAvatarService, DEFAULT_AVATAR;
+
     beforeEach(function() {
 
       newCanvas = {
@@ -24,7 +25,6 @@ describe('The Services', function() {
       currentConferenceState = {};
       attendeeColorsService = {};
       drawHelper = {};
-
 
       angular.mock.module('esn.chat');
       angular.mock.module(function($provide) {
@@ -86,7 +86,6 @@ describe('The Services', function() {
   });
 
   describe('the yArraySynchronizer factory', function() {
-
     var ylist, yjsServiceData, $window, yArraySynchronizer;
 
     beforeEach(function() {
@@ -137,6 +136,7 @@ describe('The Services', function() {
       };
 
       var spy = chai.spy();
+
       yArraySynchronizer('test', [], spy);
       expect(spy).to.been.called.with(ylist);
     });
@@ -151,6 +151,7 @@ describe('The Services', function() {
       $window.Y.List = function(t) {
         expect(t).to.equal(myTab);
         done();
+
         return ylist;
       };
 
@@ -167,6 +168,7 @@ describe('The Services', function() {
       $window.Y.List = function(t) {
         expect(t).to.equal(myTab);
         done(new Error('new ylist creation'));
+
         return ylist;
       };
 
@@ -190,7 +192,7 @@ describe('The Services', function() {
           })
         };
         ylist.observe = chai.spy();
-        $window.Y.List = function(t) {
+        $window.Y.List = function() {
           return ylist;
         };
 
@@ -227,7 +229,6 @@ describe('The Services', function() {
           return newYList;
         };
 
-
         callback(events);
         expect(newYList.observe).to.have.been.called.once;
       });
@@ -255,6 +256,7 @@ describe('The Services', function() {
         events = [{
           name: 'chat:messages'
         }];
+
         myTab = ['a', 'b'];
 
         yArraySynchronizer('test', myTab, mySpy);
@@ -266,9 +268,7 @@ describe('The Services', function() {
         callback(events);
         expect(newYList.elements).to.deep.equal(['a', 'b', 'c']);
       });
-
     });
-
   });
 
   describe('the chat factory', function() {
@@ -309,7 +309,6 @@ describe('The Services', function() {
         return yListToMessagesMock(ylist, messages);
       };
 
-
       message = {foo: 'bar'};
 
       module(function($provide) {
@@ -344,10 +343,10 @@ describe('The Services', function() {
       });
 
       it('should fail if no message is provided', function() {
-
         var test = function() {
           chatFactory.sendMessage();
         };
+
         expect(test).to.throw(/No message provided/);
       });
 
@@ -358,6 +357,7 @@ describe('The Services', function() {
 
       it('should broadcast a chat:message:sent', function(done) {
         var scope = $rootScope.$new();
+
         scope.$on('chat:message:sent', function() {
           done();
         });
@@ -406,6 +406,7 @@ describe('The Services', function() {
 
       it('should broadcast chat:window:visibility event on window opening', function(done) {
         var scope = $rootScope.$new();
+
         scope.$on('chat:window:visibility', function(evt, data) {
           expect(data).to.deep.equal({visible: true});
           done();
@@ -414,6 +415,7 @@ describe('The Services', function() {
       });
       it('should broadcast chat:window:visibility event on window closing', function(done) {
         var scope = $rootScope.$new();
+
         chatFactory.toggleWindow();
         scope.$on('chat:window:visibility', function(evt, data) {
           expect(data).to.deep.equal({visible: false});
@@ -453,6 +455,7 @@ describe('The Services', function() {
           var ylist = {
             observe: function() {}
           };
+
           callbackMock(ylist);
           expect(chatFactory.yMessages).to.equal(ylist);
         });
@@ -460,6 +463,7 @@ describe('The Services', function() {
           var ylist = {
             observe: function() {}
           };
+
           yListToMessagesMock = function(ylist, messages) {
             messages.push('hello');
           };
@@ -470,17 +474,20 @@ describe('The Services', function() {
           var ylist = {
             observe: function() {}
           };
+
           $rootScope.$applyAsync = done;
           callbackMock(ylist);
         });
         it('should flush the messages array', function() {
           var messages = chatFactory.messages;
+
           messages.push(1);
           messages.push(2);
           messages.push(3);
           var ylist = {
             observe: function() {}
           };
+
           callbackMock(ylist);
           expect(messages).have.length(0);
         });
@@ -519,8 +526,8 @@ describe('The Services', function() {
               position: 2
             }
           ];
-
           var received = [];
+
           $rootScope.$on('chat:message:received', function(evt, data) {
             received.push(data);
           });
@@ -541,8 +548,8 @@ describe('The Services', function() {
               position: 2
             }
           ];
-
           var received = [];
+
           expect(chatFactory.opened).to.be.false;
           $rootScope.$on('chat:message:received', function(evt, data) {
             received.push(data);
@@ -564,8 +571,8 @@ describe('The Services', function() {
               position: 2
             }
           ];
-
           var received = [];
+
           chatFactory.toggleWindow();
           expect(chatFactory.opened).to.be.true;
           $rootScope.$on('chat:message:received', function(evt, data) {
@@ -581,6 +588,7 @@ describe('The Services', function() {
 
   describe('the yListToMessages factory', function() {
     var yListToMessages;
+
     beforeEach(module('esn.chat'));
     beforeEach(inject(function(_yListToMessages_) {
       yListToMessages = _yListToMessages_;
@@ -601,6 +609,7 @@ describe('The Services', function() {
           return yMessages;
         }
       };
+
       yListToMessages(ylist, messages);
       expect(messages).to.deep.equal(yMessages);
     });
@@ -615,6 +624,7 @@ describe('The Services', function() {
           return yMessages;
         }
       };
+
       yListToMessages(ylist, messages);
       expect(messages).to.have.length(2);
       expect(messages[0]).to.not.have.property('$$id');

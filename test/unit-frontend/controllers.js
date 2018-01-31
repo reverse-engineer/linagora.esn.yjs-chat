@@ -5,6 +5,7 @@ var expect = chai.expect;
 
 describe('the chatController controller', function() {
   var $controller, $rootScope, $scope, chat = {messages: []};
+
   beforeEach(function() {
     module('esn.chat');
 

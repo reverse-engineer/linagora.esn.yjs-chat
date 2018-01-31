@@ -12,6 +12,7 @@ function info(req, res) {
 
 module.exports = function(dependencies) {
   controller = require('./core')(dependencies);
+
   return {
     info: info
   };
