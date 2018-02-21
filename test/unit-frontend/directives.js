@@ -150,7 +150,11 @@ describe('Directives', function() {
     beforeEach(function() {
       var webRTCService = {
         myRtcid: function() {
-          return rtcid;
+          return {
+            then: function(cb) {
+              return cb(rtcid);
+            }
+          };
         }
       };
 
@@ -480,7 +484,11 @@ describe('Directives', function() {
       };
       this.webRTCService = {
         myRtcid: function() {
-          return 'myself';
+          return {
+            then: function(cb) {
+              return cb('myself');
+            }
+          };
         }
       };
       var self = this;

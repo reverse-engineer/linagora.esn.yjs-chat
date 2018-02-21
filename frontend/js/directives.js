@@ -46,9 +46,11 @@ angular.module('esn.chat')
     function(ChatMessage, chat, webRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE, currentConferenceState) {
 
       function getMyDisplayName() {
-        var myself = currentConferenceState.getAttendeeByRtcid(webRTCService.myRtcid());
+        return webRTCService.myRtcid().then(function(myId) {
+          var myself = currentConferenceState.getAttendeeByRtcid(myId);
 
-        return (myself && myself.displayName) ? myself.displayName : null;
+          return (myself && myself.displayName) ? myself.displayName : null;
+        });
       }
 
       function link(scope, element) {
@@ -56,17 +58,18 @@ angular.module('esn.chat')
 
         scope.createMessage = function() {
           var avatar = localCameraScreenshot.shoot(CHAT_AVATAR_SIZE);
+          webRTCService.myRtcid().then(function(myId) {
+            var chatMsgData = {
+              author: myId,
+              authorAvatar: avatar ? avatar.src : null,
+              published: Date.now(),
+              message: scope.messageContent,
+              displayName: getMyDisplayName()
+            };
 
-          var chatMsgData = {
-            author: webRTCService.myRtcid(),
-            authorAvatar: avatar ? avatar.src : null,
-            published: Date.now(),
-            message: scope.messageContent,
-            displayName: getMyDisplayName()
-          };
-
-          chat.sendMessage(new ChatMessage(chatMsgData));
-          scope.messageContent = '';
+            chat.sendMessage(new ChatMessage(chatMsgData));
+            scope.messageContent = '';
+          });
         };
 
         scope.$on('chat:window:visibility', function(event, data) {
@@ -93,7 +96,9 @@ angular.module('esn.chat')
         },
 
         link: function($scope) {
-          $scope.myself = webRTCService.myRtcid() === $scope.chatMessage.author;
+          webRTCService.myRtcid().then(function(myId) {
+            $scope.myself = myId === $scope.chatMessage.author;
+          });
         }
       };
     }])
