@@ -45,12 +45,10 @@ angular.module('esn.chat')
   .directive('chatMessageEditor', ['ChatMessage', 'chat', 'webRTCService', 'localCameraScreenshot', 'CHAT_AVATAR_SIZE', 'currentConferenceState',
     function(ChatMessage, chat, webRTCService, localCameraScreenshot, CHAT_AVATAR_SIZE, currentConferenceState) {
 
-      function getMyDisplayName() {
-        return webRTCService.myRtcid().then(function(myId) {
-          var myself = currentConferenceState.getAttendeeByRtcid(myId);
+      function getMyDisplayName(myId) {
+        var myself = currentConferenceState.getAttendeeByRtcid(myId);
 
-          return (myself && myself.displayName) ? myself.displayName : null;
-        });
+        return (myself && myself.displayName) ? myself.displayName : null;
       }
 
       function link(scope, element) {
@@ -58,13 +56,14 @@ angular.module('esn.chat')
 
         scope.createMessage = function() {
           var avatar = localCameraScreenshot.shoot(CHAT_AVATAR_SIZE);
+
           webRTCService.myRtcid().then(function(myId) {
             var chatMsgData = {
               author: myId,
               authorAvatar: avatar ? avatar.src : null,
               published: Date.now(),
               message: scope.messageContent,
-              displayName: getMyDisplayName()
+              displayName: getMyDisplayName(myId)
             };
 
             chat.sendMessage(new ChatMessage(chatMsgData));
