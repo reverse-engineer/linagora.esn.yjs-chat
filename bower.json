@@ -27,7 +27,7 @@
     "angular": "1.6.8",
     "angular-mocks": "1.6.8",
     "linagora.esn.yjs": "linagora/linagora.esn.yjs",
-    "angular-liveconference": "https://ci.linagora.com/linagora/lgs/openpaas/angular-liveconference.git#janus",
+    "angular-liveconference": "https://github.com/linagora/angular-liveconference",
     "dynamic-directive": "1.0.0"
   },
   "resolutions": {
